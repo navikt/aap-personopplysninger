@@ -1,0 +1,3 @@
+pdl:
+  url: https://pdl-api.dev-fss-pub.nais.io/graphql
+  scope: api://dev-fss.pdl.pdl-api/.default

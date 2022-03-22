@@ -1,0 +1,2 @@
+skjerming:
+  base-url: ${SKJERMING_URL:-http://skjermede-personer-pip.nom}
