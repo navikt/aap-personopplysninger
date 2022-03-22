@@ -28,7 +28,7 @@ tasks {
 }
 
 application {
-    mainClass.set("skjerming.AppKt")
+    mainClass.set("nom.skjerming.AppKt")
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("main")
