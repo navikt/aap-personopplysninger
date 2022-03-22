@@ -7,6 +7,11 @@ metadata:
     team: aap
 spec:
   image: {{image}}
+  accessPolicy:
+    outbound:
+      rules:
+        - application: skjermede-personer-pip
+          namespace: nom
   replicas:
     cpuThresholdPercentage: 90
     disableAutoScaling: true
