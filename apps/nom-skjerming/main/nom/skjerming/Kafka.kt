@@ -1,8 +1,8 @@
 package nom.skjerming
 
-import no.nav.aap.kafka.JsonSerde
-import no.nav.aap.kafka.Table
-import no.nav.aap.kafka.Topic
+import no.nav.aap.kafka.serde.JsonSerde
+import no.nav.aap.kafka.streams.Table
+import no.nav.aap.kafka.streams.Topic
 import nom.skjerming.skjerming.SkjermetPersonDto
 import org.apache.kafka.common.serialization.Serdes
 

@@ -1,4 +1,4 @@
-package no.nav.aap.kafka
+package no.nav.aap.kafka.streams
 
 data class Table<K, V>(
     val name: String,
