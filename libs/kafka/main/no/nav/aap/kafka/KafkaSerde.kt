@@ -1,14 +1,22 @@
-package nom.skjerming.kafka
+package no.nav.aap.kafka
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serializer
 import kotlin.reflect.KClass
+
+fun <T : SpecificRecord> avroSerde(config: KafkaConfig): SpecificAvroSerde<T> = SpecificAvroSerde<T>().apply {
+    val avroProperties = config.schemaRegistry + config.ssl
+    val avroConfig = avroProperties.map { it.key.toString() to it.value.toString() }
+    configure(avroConfig.toMap(), false)
+}
 
 class JsonSerde<V : Any>(private val kclass: KClass<V>) : Serde<V> {
     override fun serializer(): Serializer<V> = JsonSerializer()

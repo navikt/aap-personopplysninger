@@ -1,8 +1,6 @@
-package nom.skjerming.kafka
+package no.nav.aap.kafka
 
-import nom.skjerming.skjerming.SkjermetPersonDto
 import org.apache.kafka.common.serialization.Serde
-import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Joined
 import org.apache.kafka.streams.kstream.Produced
@@ -18,8 +16,3 @@ data class Topic<K, V>(
     fun <R : Any> joined(right: Topic<K, R>): Joined<K, V, R> =
         Joined.with(keySerde, valueSerde, right.valueSerde, "$name-joined-${right.name}")
 }
-
-object Topics {
-    val skjerming = Topic("nom.skjermede-personer-v1", Serdes.StringSerde(), JsonSerde.create<SkjermetPersonDto>())
-}
-

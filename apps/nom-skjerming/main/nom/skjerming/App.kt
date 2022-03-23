@@ -6,7 +6,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import nom.skjerming.kafka.*
+import no.nav.aap.kafka.*
 
 fun main() {
     embeddedServer(Netty, port = 8080, module = Application::skjerming).start(wait = true)

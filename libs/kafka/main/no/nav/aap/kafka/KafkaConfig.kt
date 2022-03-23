@@ -1,5 +1,9 @@
-package nom.skjerming.kafka
+package no.nav.aap.kafka
 
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig
+import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -20,16 +24,30 @@ data class KafkaConfig(
     val truststorePath: String,
     val keystorePath: String,
     val credstorePsw: String,
+    val schemaRegistryUrl: String?,
+    val schemaRegistryUser: String?,
+    val schemaRegistryPwd: String?,
 ) {
+
+    internal val schemaRegistry: Properties = Properties().apply {
+        if (schemaRegistryUrl != null) {
+            this[AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG] = schemaRegistryUrl
+            if (security) {
+                this[SchemaRegistryClientConfig.BASIC_AUTH_CREDENTIALS_SOURCE] = "USER_INFO"
+                this[SchemaRegistryClientConfig.USER_INFO_CONFIG] = "$schemaRegistryUser:$schemaRegistryPwd"
+            }
+        }
+    }
 
     private val kStreams: Properties = Properties().apply {
         this[CommonClientConfigs.CLIENT_ID_CONFIG] = clientId
         this[StreamsConfig.APPLICATION_ID_CONFIG] = applicationId
         this[StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG] = "0"
-        this[StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG] = JsonSerde::class.java.name
+        this[StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG] = SpecificAvroSerde::class.java.name
         this[StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG] = LogContinueErrorHandler::class.java.name
         this[StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG] = LogAndSkipOnInvalidTimestamp::class.java.name
         this[StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG] = LogAndContinueExceptionHandler::class.java.name
+        this[KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG] = false
     }
 
     val ssl: Properties = Properties().apply {
@@ -46,14 +64,14 @@ data class KafkaConfig(
         }
     }
 
-    val consumer: Properties = kStreams + ssl + Properties().apply {
+    val consumer: Properties = kStreams + ssl + schemaRegistry + Properties().apply {
         this[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = brokers
         this[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
         this[ConsumerConfig.GROUP_ID_CONFIG] = "aap-inntekt-1"
         this[ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG] = 124_000
     }
 
-    val producer: Properties = kStreams + ssl + Properties().apply {
+    val producer: Properties = kStreams + schemaRegistry+ ssl + Properties().apply {
         this[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = brokers
         this[ProducerConfig.ACKS_CONFIG] = "all"
         this[ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION] = "5"

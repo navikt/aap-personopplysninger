@@ -17,6 +17,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
 
+    implementation(project(":libs:kafka"))
+    implementation("no.nav.pdl:contract-pdl-avro:1.0-SNAPSHOT")
+
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-test-host:1.6.8")
 }

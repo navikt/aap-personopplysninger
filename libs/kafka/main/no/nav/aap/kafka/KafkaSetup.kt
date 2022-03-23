@@ -1,4 +1,4 @@
-package nom.skjerming.kafka
+package no.nav.aap.kafka
 
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.Consumer
@@ -76,11 +76,11 @@ class KafkaSetup : Kafka {
 
 fun named(named: String): Named = Named.`as`(named)
 
-fun <V> materialized(
+fun <K, V> materialized(
     storeName: String,
-    topic: Topic<String, V>,
-): Materialized<String, V, KeyValueStore<Bytes, ByteArray>> =
-    Materialized.`as`<String?, V, KeyValueStore<Bytes, ByteArray>?>(storeName)
+    topic: Topic<K, V>,
+): Materialized<K, V, KeyValueStore<Bytes, ByteArray>> =
+    Materialized.`as`<K?, V, KeyValueStore<Bytes, ByteArray>?>(storeName)
         .withKeySerde(topic.keySerde)
         .withValueSerde(topic.valueSerde)
 
@@ -106,7 +106,7 @@ fun <K, V> KStream<K, V>.to(topic: Topic<K, V>, producedWith: Produced<K, V>) = 
     .peek { key, value -> secureLog.info("produced [${topic.name}] K:$key V:$value") }
     .to(topic.name, producedWith)
 
-fun <V> KStream<String, V>.toTable(table: Table<String, V>) {
+fun <K, V> KStream<K, V>.toTable(table: Table<K, V>) {
     peek { key, value -> secureLog.info("produced [${table.stateStoreName}] K:$key V:$value") }
         .toTable(named("${table.name}-as-ktable"), materialized(table.stateStoreName, table.source))
 }
