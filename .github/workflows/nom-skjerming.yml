@@ -56,5 +56,5 @@ jobs:
           PRINT_PAYLOAD: true
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/${{ github.workflow }}/main/nais.yml
-#          VARS: apps/${{ github.workflow }}/main/dev.yml
+          RESOURCE: apps/${{ github.workflow }}/nais.yml
+#          VARS: apps/${{ github.workflow }}/dev.yml
