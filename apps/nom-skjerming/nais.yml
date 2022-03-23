@@ -7,16 +7,14 @@ metadata:
     team: aap
 spec:
   image: {{image}}
-  accessPolicy:
-    outbound:
-      rules:
-        - application: skjermede-personer-pip
-          namespace: nom
   replicas:
     cpuThresholdPercentage: 90
     disableAutoScaling: true
     max: 1
     min: 1
+  kafka:
+    pool: nav-dev
+    streams: true
   resources:
     limits:
       cpu: 1000m
@@ -39,3 +37,8 @@ spec:
     path: /metrics
   secureLogs:
     enabled: true
+  env:
+    - name: LOG_APPENDER
+      value: json
+    - name: KAFKA_SECURITY_ENABLED
+      value: "true"
