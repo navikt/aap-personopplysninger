@@ -43,10 +43,10 @@ fun Application.pdlApi(kStreams: Kafka = KStreams) {
     runBlocking { pdlClient.hentAlt("11111111111") }.let(::println)
 
     kStreams.start(config.kafka) {
-        val personopplysninger = consume(Topics.personopplysninger) { "consume-personopplysninger" }
+        val personopplysningerTable = consume(Topics.personopplysninger) { "consume-personopplysninger" }
             .produce(Tables.personopplysninger, false) { "personopplysning-as-ktable" }
 
-        LeesahStream(pdlClient, personopplysninger, this)
+        LeesahStream(pdlClient, personopplysningerTable, this)
         GeografiskTilknytningStream(this)
     }
 

@@ -39,7 +39,10 @@ internal class LeesahStream(
         when (val gradering = wrapper.left.generic("adressebeskyttelse")?.string("gradering")) {
             null -> Adressebeskyttelse(runBlocking { pdl.hentAdressebeskyttelse(personident).adressebeskyttelse }.gradering)
             else -> Adressebeskyttelse(gradering)
-        }.let { wrapper.right.copy(adressebeskyttelse = it) }
+        }.let {
+            val personopplysninger = wrapper.right
+            personopplysninger.copy(adressebeskyttelse = it)
+        }
 
     private data class Wrapper(val left: GenericRecord, val right: Personopplysninger)
 
