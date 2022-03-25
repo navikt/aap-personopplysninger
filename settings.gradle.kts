@@ -1,7 +1,7 @@
 rootProject.name = "personopplysninger"
 
 include(
-    "apps:pdl-api",
+    "apps:personopplysninger",
     "apps:nom-skjerming",
 )
 

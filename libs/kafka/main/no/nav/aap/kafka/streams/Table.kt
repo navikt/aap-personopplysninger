@@ -1,8 +1,8 @@
 package no.nav.aap.kafka.streams
 
-data class Table<K, V>(
+data class Table<V>(
     val name: String,
-    val source: Topic<K, V>,
+    val source: Topic<V>,
 ) {
     val stateStoreName = "$name-state-store"
 }

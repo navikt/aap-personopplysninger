@@ -1,8 +1,8 @@
-package nom.skjerming.skjerming
+package nom.skjerming
 
 import java.time.LocalDateTime
 
-data class SkjermetPersonDto(
+data class SkjermetDto(
     val skjermetFra: LocalDateTime,
 
     /** null betyr at den er skjermet til ubestemt tid*/

@@ -10,16 +10,14 @@ import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serializer
 import kotlin.reflect.KClass
 
-class JsonSerde<V : Any>(private val kclass: KClass<V>) : Serde<V> {
-    override fun serializer(): Serializer<V> = JsonSerializer()
-    override fun deserializer(): Deserializer<V> = JsonDeserializer(kclass)
-
-    companion object {
-        inline fun <reified V : Any> create() = JsonSerde(V::class)
+object JsonSerde {
+    inline fun <reified V : Any> jackson() = object : Serde<V> {
+        override fun serializer(): Serializer<V> = JacksonSerializer()
+        override fun deserializer(): Deserializer<V> = JacksonDeserializer(V::class)
     }
 }
 
-class JsonDeserializer<T : Any>(private val kclass: KClass<T>) : Deserializer<T> {
+class JacksonDeserializer<T : Any>(private val kclass: KClass<T>) : Deserializer<T> {
     private val jackson: ObjectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule())
         disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -28,7 +26,7 @@ class JsonDeserializer<T : Any>(private val kclass: KClass<T>) : Deserializer<T>
     override fun deserialize(topic: String, data: ByteArray?): T? = jackson.readValue(data, kclass.java)
 }
 
-class JsonSerializer<T : Any> : Serializer<T> {
+class JacksonSerializer<T : Any> : Serializer<T> {
     private val jackson: ObjectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule())
         disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

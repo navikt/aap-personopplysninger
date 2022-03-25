@@ -45,21 +45,30 @@ object KStreams : Kafka {
 
 fun named(named: String): Named = Named.`as`(named)
 
-fun <K, V> materialized(storeName: String, topic: Topic<K, V>): Materialized<K, V, KeyValueStore<Bytes, ByteArray>> =
-    Materialized.`as`<K, V, KeyValueStore<Bytes, ByteArray>>(storeName)
+fun <V> materialized(
+    storeName: String,
+    topic: Topic<V>,
+    changelog: Boolean = true,
+): Materialized<String, V, KeyValueStore<Bytes, ByteArray>> =
+    Materialized.`as`<String, V, KeyValueStore<Bytes, ByteArray>>(storeName)
         .withKeySerde(topic.keySerde)
         .withValueSerde(topic.valueSerde)
+        .apply { if (!changelog) withLoggingDisabled() }
 
 fun <V> Store<V>.allValues(): List<V> = all().use { it.asSequence().map(KeyValue<String, V>::value).toList() }
 
-fun <K, V> StreamsBuilder.consume(topic: Topic<K, V>, named: () -> String): KStream<K, V> =
+fun <V> StreamsBuilder.consume(topic: Topic<V>, named: () -> String): KStream<String, V> =
     stream(topic.name, topic.consumed(named()))
         .peek { key, value -> secureLog.info("consumed [${topic.name}] K:$key V:$value") }
 
-fun <K, V> KStream<K, V>.produce(topic: Topic<K, V>, producedWith: Produced<K, V>) =
+fun <V> KStream<String, V>.produce(topic: Topic<V>, named: () -> String) =
     peek { key, value -> secureLog.info("produced [${topic.name}] K:$key V:$value") }
-        .to(topic.name, producedWith)
+        .to(topic.name, topic.produced(named()))
 
-fun <K, V> KStream<K, V>.produce(table: Table<K, V>, named: () -> String): KTable<K, V> =
+fun <V> KStream<String, V>.produce(table: Table<V>, changelog: Boolean = true, named: () -> String): KTable<String, V> =
     peek { key, value -> secureLog.info("produced [${table.stateStoreName}] K:$key V:$value") }
-        .toTable(named(named()), materialized(table.stateStoreName, table.source))
+        .toTable(named(named()), materialized(table.stateStoreName, table.source, changelog))
+
+@Suppress("UNCHECKED_CAST")
+fun <V> KStream<String, V?>.filterNotNull(): KStream<String, V> =
+    filter { _, value -> value != null } as KStream<String, V>

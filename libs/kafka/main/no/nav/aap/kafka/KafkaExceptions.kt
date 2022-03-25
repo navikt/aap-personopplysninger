@@ -21,7 +21,7 @@ class ReplaceThread(message: Any) : RuntimeException(message.toString())
  *
  * Exceptions during deserialization, networks issues etc.
  */
-class EntryPointExceptionHandler : DeserializationExceptionHandler {
+object EntryPointExceptionHandler : DeserializationExceptionHandler {
     override fun configure(configs: MutableMap<String, *>) {}
     override fun handle(context: ProcessorContext, record: ConsumerRecord<ByteArray, ByteArray>, exception: Exception) =
         DeserializationExceptionHandler.DeserializationHandlerResponse.CONTINUE.also {
@@ -62,7 +62,7 @@ object ProcessingExceptionHandler : StreamsUncaughtExceptionHandler {
  *
  * Exceptions due to serialization, networking etc.
  */
-class ExitPointExceptionHandler : ProductionExceptionHandler {
+object ExitPointExceptionHandler : ProductionExceptionHandler {
     override fun configure(configs: MutableMap<String, *>) {}
     override fun handle(record: ProducerRecord<ByteArray, ByteArray>, exception: Exception) =
         CONTINUE.also { secureLog.error("Feil i streams, logger og leser neste record", exception) }
