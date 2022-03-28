@@ -1,4 +1,4 @@
 package personopplysninger.aap
 
-class AapBehovStream {
+class BehovStream {
 }

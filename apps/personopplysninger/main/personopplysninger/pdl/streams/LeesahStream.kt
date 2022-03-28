@@ -1,0 +1,52 @@
+package personopplysninger.pdl.streams
+
+import domain.Adressebeskyttelse
+import domain.Personopplysninger
+import kotlinx.coroutines.runBlocking
+import no.nav.aap.kafka.avro.array
+import no.nav.aap.kafka.avro.generic
+import no.nav.aap.kafka.avro.string
+import no.nav.aap.kafka.streams.*
+import org.apache.avro.generic.GenericRecord
+import org.apache.kafka.streams.StreamsBuilder
+import org.apache.kafka.streams.kstream.KTable
+import personopplysninger.Topics
+import personopplysninger.pdl.api.PdlGraphQLClient
+
+internal class LeesahStream(
+    private val pdl: PdlGraphQLClient,
+    personopplysninger: KTable<String, Personopplysninger>,
+    kStreams: StreamsBuilder,
+) {
+    init {
+        kStreams
+            .consume(Topics.leesah) { "consume-pdl-leesah" }
+            .filterNotNull { "filter-pdl-leesah-tombstones" }
+            .filter(::isAdressebeskyttelse) { "filter-is-adressebeskyttelse" }
+            .selectKey("") { _, value -> value.personidenter.single { it.length == 11 } }
+            .join(Topics.leesah with Topics.personopplysninger, personopplysninger, Wrapper::merge)
+            .mapValues(::toAddressebeskyttelse)
+            .produce(Topics.personopplysninger) { "person-with-adressebeskyttelse" }
+    }
+
+    // https://github.com/navikt/pdl/blob/master/libs/contract-pdl-avro/src/main/java/no/nav/person/identhendelse/Opplysningstype.java
+    private fun isAdressebeskyttelse(k_: String, v: GenericRecord) = v.opplysningstype == "ADRESSEBESKYTTELSE_V1"
+
+    private fun toAddressebeskyttelse(personident: String, wrapper: Wrapper): Personopplysninger =
+        when (val gradering = wrapper.leesah.gradering) {
+            null -> Adressebeskyttelse(runBlocking { pdl.hentAdressebeskyttelse(personident).adressebeskyttelse }.gradering)
+            else -> Adressebeskyttelse(gradering)
+        }.let {
+            wrapper.person.copy(adressebeskyttelse = it)
+        }
+
+    private class Wrapper(val leesah: GenericRecord, val person: Personopplysninger) {
+        companion object {
+            fun merge(left: GenericRecord, right: Personopplysninger) = Wrapper(left, right)
+        }
+    }
+}
+
+private val GenericRecord.opplysningstype get() = string("opplysningstype")
+private val GenericRecord.personidenter get() = array("personidenter").map(Any::toString)
+private val GenericRecord.gradering get() = generic("adressebeskyttelse")?.string("gradering")

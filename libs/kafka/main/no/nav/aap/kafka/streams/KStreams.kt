@@ -70,5 +70,8 @@ fun <V> KStream<String, V>.produce(table: Table<V>, changelog: Boolean = true, n
         .toTable(named(named()), materialized(table.stateStoreName, table.source, changelog))
 
 @Suppress("UNCHECKED_CAST")
-fun <V> KStream<String, V?>.filterNotNull(): KStream<String, V> =
-    filter { _, value -> value != null } as KStream<String, V>
+fun <V> KStream<String, V?>.filterNotNull(named: () -> String): KStream<String, V> =
+    filter({ _, value -> value != null }, named(named())) as KStream<String, V>
+
+fun <K, V> KStream<K, V>.filter(predicate: Predicate<in K, in V>, named: () -> String): KStream<K, V> =
+    filter(predicate, named(named()))

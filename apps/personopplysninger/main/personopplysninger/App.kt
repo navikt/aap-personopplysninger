@@ -19,8 +19,8 @@ import no.nav.aap.kafka.serde.JsonSerde
 import no.nav.aap.kafka.streams.*
 import pdl.api.AzureClient
 import personopplysninger.pdl.api.PdlGraphQLClient
-import personopplysninger.pdl.geografisktilknytning.GeografiskTilknytningStream
-import personopplysninger.pdl.leesah.LeesahStream
+import personopplysninger.pdl.streams.GeografiskTilknytningStream
+import personopplysninger.pdl.streams.LeesahStream
 
 fun main() {
     embeddedServer(Netty, port = 8080, module = Application::pdlApi).start(wait = true)
