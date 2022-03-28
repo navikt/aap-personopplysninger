@@ -1,0 +1,2 @@
+norg:
+  proxy-url: ${NORG_PROXY_URL:-http://0.0.0.0:8088/norg}
