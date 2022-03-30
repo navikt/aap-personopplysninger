@@ -18,6 +18,7 @@ fun skjermingStream(skjermingTable: GlobalKTable<String, SkjermetDto>) = { chain
                 )
             }
         }
+        .mapValues(Personopplysninger::toDto)
         .produce(Topics.personopplysninger) { "produced-personopplysning-skjermet" }
 }
 

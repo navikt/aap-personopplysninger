@@ -1,20 +1,20 @@
 pdl:
-  url: ${PDL_URL:-http://0.0.0.0:8099/graphql}
-  scope: ${PDL_SCOPE:-test}
+  url: ${PDL_URL}
+  scope: ${PDL_SCOPE}
 
-norg:
-  proxy-url: ${NORG_PROXY_URL:-http://0.0.0.0:8088/norg}
+proxy:
+  base-url: ${PROXY_BASEURL}
 
 azure:
-  tokenEndpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT:-http://localhost:8098/token}
-  clientId: ${AZURE_APP_CLIENT_ID:-test}
-  clientSecret: ${AZURE_APP_CLIENT_SECRET:-test}
+  tokenEndpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+  clientId: ${AZURE_APP_CLIENT_ID}
+  clientSecret: ${AZURE_APP_CLIENT_SECRET}
 
 kafka:
-  application-id: ${KAFKA_STREAMS_APPLICATION_ID:-personopplysninger}
-  brokers: ${KAFKA_BROKERS:-localhost:9092}
-  security: ${KAFKA_SECURITY_ENABLED:-false}
-  truststorePath: ${KAFKA_TRUSTSTORE_PATH:-}
-  keystorePath: ${KAFKA_KEYSTORE_PATH:-}
-  credstorePsw: ${KAFKA_CREDSTORE_PASSWORD:-}
-  clientId: ${KAFKA_CLIENT_ID:-personopplysninger}
+  application-id: ${KAFKA_STREAMS_APPLICATION_ID}
+  brokers: ${KAFKA_BROKERS}
+  security: ${KAFKA_SECURITY_ENABLED}
+  truststorePath: ${KAFKA_TRUSTSTORE_PATH}
+  keystorePath: ${KAFKA_KEYSTORE_PATH}
+  credstorePsw: ${KAFKA_CREDSTORE_PASSWORD}
+  clientId: ${KAFKA_CLIENT_ID}

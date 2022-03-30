@@ -1,41 +1,56 @@
 package personopplysninger
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.application.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.jackson.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.testing.*
+import io.ktor.server.plugins.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.coroutines.runBlocking
 import org.intellij.lang.annotations.Language
-import org.junit.Ignore
-import org.junit.Test
 import personopplysninger.pdl.api.PdlRequest
 
-class PdlTest {
+class Mocks : AutoCloseable {
+    val pdl = pdlMock().apply { start() }
+    val oauth = oauthMock().apply { start() }
+    val norg = norgProxyMock().apply { start() }
+    val kafka = KStreamsMock()
 
-    @Test
-    @Ignore
-    fun test() {
-        Mocks.use {
-            withTestApplication(Application::personopplysninger) {}
-        }
+    companion object {
+        val NettyApplicationEngine.port get() = runBlocking { resolvedConnectors() }.first { it.type == ConnectorType.HTTP }.port
     }
-}
 
-object Mocks : AutoCloseable {
-    private val pdl = pdlMock().apply { start() }
-    private val oauth = oauthMock().apply { start() }
     override fun close() {
         pdl.stop(100, 100)
         oauth.stop(100, 100)
+        norg.stop(100, 100)
+        kafka.close()
     }
 
-    private fun pdlMock() = embeddedServer(Netty, port = 8099) {
+    private fun norgProxyMock() = embeddedServer(Netty, port = 0) {
+        install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
+        routing {
+            post("/norg/arbeidsfordeling") {
+                call.respondText(norgArbeidsfordelingResponse, ContentType.Application.Json)
+            }
+        }
+    }
+
+    private fun oauthMock() = embeddedServer(Netty, port = 0) {
+        install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
+        routing {
+            post("/token") {
+                require(call.receiveText() == "client_id=test&client_secret=test&scope=test&grant_type=client_credentials")
+                call.respondText(azureTokenResponse, ContentType.Application.Json)
+            }
+        }
+    }
+
+    private fun pdlMock() = embeddedServer(Netty, port = 0) {
         install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
         routing {
             post("/graphql") {
@@ -48,17 +63,14 @@ object Mocks : AutoCloseable {
             }
         }
     }
-
-    private fun oauthMock() = embeddedServer(Netty, port = 8098) {
-        install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
-        routing {
-            post("/token") {
-                require(call.receiveText() == "client_id=test&client_secret=test&scope=test&grant_type=client_credentials")
-                call.respondText(azureTokenResponse, ContentType.Application.Json)
-            }
-        }
-    }
 }
+
+@Language("JSON")
+private const val norgArbeidsfordelingResponse = """
+{
+  "enhetNr" : "4201"
+}    
+"""
 
 @Language("JSON")
 private const val pdlGeografiskTilknytningResponse = """

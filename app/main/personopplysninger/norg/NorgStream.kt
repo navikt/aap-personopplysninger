@@ -10,6 +10,7 @@ import personopplysninger.Topics
 internal fun norgStream(norgClient: NorgProxyClient) = { chain: KStream<String, Personopplysninger> ->
     chain
         .mapValues { personopplysninger -> settEnhet(personopplysninger, norgClient) }
+        .mapValues(Personopplysninger::toDto)
         .produce(Topics.personopplysninger) { "produce-personopplysning-enhet" }
 }
 

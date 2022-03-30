@@ -4,8 +4,8 @@ import model.Personopplysninger.PersonopplysningerDto
 
 internal object Arbeidsfordeling {
     fun createRequest(personDto: PersonopplysningerDto) = ArbeidsfordelingRequest(
-        geografiskOmraade = personDto.geografiskTilknytning,
-        skjermet = personDto.skjerming.erSkjermet,
+        geografiskOmraade = personDto.geografiskTilknytning ?: error("GT skal ikke være null her"),
+        skjermet = personDto.skjerming?.erSkjermet ?: error("skjermet skal ikke være null her"),
         diskresjonskode = when (personDto.adressebeskyttelse) {
             "STRENGT_FORTROLIG", "STRENGT_FORTROLIG_UTLAND" -> "SPSF"
             "FORTROLIG" -> "SPFO"

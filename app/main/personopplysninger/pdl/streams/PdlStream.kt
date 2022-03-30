@@ -13,7 +13,7 @@ internal fun pdlStream(pdlClient: PdlGraphQLClient) = { chain: KStream<String, P
             // fixme: dette kan gjøres penere
             personopplysninger.apply {
                 val response = runBlocking { pdlClient.hentAlt(personident) }
-                settAdressebeskyttelse(response.adressebeskyttelse.gradering)
+                settAdressebeskyttelse(response.adressebeskyttelse?.gradering)
                 response.geografiskTilknytning.let { gt ->
                     gt.gtBydel?.let { settTilhørendeBydel(it) }
                         ?: gt.gtKommune?.let { settTilhørendeKommune(it) }
@@ -22,5 +22,6 @@ internal fun pdlStream(pdlClient: PdlGraphQLClient) = { chain: KStream<String, P
                 }
             }
         }
-        .produce(Topics.personopplysninger) { "produced-personopplysning-skjermet" }
+        .mapValues(Personopplysninger::toDto)
+        .produce(Topics.personopplysninger) { "produced-personopplysning-pdl" }
 }

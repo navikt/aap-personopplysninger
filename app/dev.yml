@@ -4,3 +4,6 @@ pdl:
 
 kafka:
   pool: nav-dev
+
+proxy:
+  base-url: https://aap-fss-proxy.dev-fss-pub.nais.io

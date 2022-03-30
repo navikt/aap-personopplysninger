@@ -1,7 +1,7 @@
 package personopplysninger.pdl.api
 
 internal data class PdlResponse(val data: PdlData, val errors: List<PdlError>?) {
-    val adressebeskyttelse get() = data.hentPerson?.adressebeskyttelse?.singleOrNull() ?: error("skal ikke være null hvis requested")
+    val adressebeskyttelse get() = data.hentPerson?.adressebeskyttelse?.singleOrNull()
     val geografiskTilknytning get() = data.hentGeografiskTilknytning ?: error("skal ikke være null hvis requested")
 }
 

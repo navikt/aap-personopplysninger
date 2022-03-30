@@ -11,9 +11,9 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import java.net.URL
 
-internal data class NorgConfig(val proxyUrl: URL)
+internal data class ProxyConfig(val baseUrl: URL)
 
-internal class NorgProxyClient(private val config: NorgConfig) {
+internal class NorgProxyClient(private val config: ProxyConfig) {
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson {
@@ -26,7 +26,7 @@ internal class NorgProxyClient(private val config: NorgConfig) {
     }
 
     suspend fun hentArbeidsfordeling(request: ArbeidsfordelingRequest) =
-        httpClient.post("${config.proxyUrl}/norg/arbeidsfordeling") {
+        httpClient.post("${config.baseUrl}/norg/arbeidsfordeling") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
             setBody(request)

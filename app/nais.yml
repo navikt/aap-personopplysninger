@@ -52,5 +52,5 @@ spec:
       value: json
     - name: KAFKA_SECURITY_ENABLED
       value: "true"
-    - name: NORG_PROXY_URL
-      value: https://aap-fss-proxy.dev-fss-pub.nais.io
+    - name: PROXY_BASEURL
+      value: {{proxy.base-url}}

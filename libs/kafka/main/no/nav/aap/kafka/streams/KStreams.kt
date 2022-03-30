@@ -35,7 +35,7 @@ object KStreams : Kafka {
     override fun start(kafkaConfig: KafkaConfig, streamsBuilder: StreamsBuilder.() -> Unit) {
         val topology = StreamsBuilder().apply(streamsBuilder).build()
         streams = KafkaStreams(topology, kafkaConfig.consumer + kafkaConfig.producer).apply {
-            setUncaughtExceptionHandler(ProcessingExceptionHandler)
+            setUncaughtExceptionHandler(ProcessingExceptionHandler())
             setStateListener { newState, _ -> if (newState == RUNNING) started = true }
             start()
         }
