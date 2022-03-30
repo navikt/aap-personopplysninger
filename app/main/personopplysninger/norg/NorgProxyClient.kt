@@ -26,7 +26,7 @@ internal class NorgProxyClient(private val config: NorgConfig) {
     }
 
     suspend fun hentArbeidsfordeling(request: ArbeidsfordelingRequest) =
-        httpClient.post(config.proxyUrl) {
+        httpClient.post("${config.proxyUrl}/norg/arbeidsfordeling") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
             setBody(request)
