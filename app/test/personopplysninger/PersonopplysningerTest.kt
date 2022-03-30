@@ -29,7 +29,6 @@ class PersonopplysningerTest {
         assertEquals(expectedPersonopplysninger, oppdatertPerson.value)
     }
 
-
     @Test
     fun `person uten skjerming joines med personopplysninger`() = testApp { mocks ->
         val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)
@@ -59,7 +58,6 @@ class PersonopplysningerTest {
         assertEquals("12345678910", oppdatertPerson.key)
         assertEquals(expectedPersonopplysninger, oppdatertPerson.value)
     }
-
 
     @Test
     fun `kaller norg etter at pdl er joinet`() = testApp { mocks ->

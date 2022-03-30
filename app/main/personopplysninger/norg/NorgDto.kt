@@ -22,9 +22,9 @@ data class ArbeidsfordelingRequest(
     val skjermet: Boolean,
     val diskresjonskode: String,
     private val tema: String = "AAP",
-    private val behandlingstema: String = Behandlingstema.`§11-5`,
+    private val behandlingstema: String = Behandlingstema.ARBEIDSAVKLARINGSPENGER,
 )
 
 private object Behandlingstema {
-    const val `§11-5` = "abNNNN" // TODO: bestille hos NORG
+    const val ARBEIDSAVKLARINGSPENGER = "ab0014"
 }
