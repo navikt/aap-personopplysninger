@@ -1,4 +1,4 @@
-package no.nav.aap.kafka.serde
+package no.nav.aap.kafka.serde.avro
 
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde

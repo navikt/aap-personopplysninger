@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.streams.StreamsConfig
-import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler
 import org.apache.kafka.streams.processor.LogAndSkipOnInvalidTimestamp
 import java.util.*
 
@@ -71,7 +70,7 @@ data class KafkaConfig(
         this[ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG] = 124_000
     }
 
-    val producer: Properties = kStreams + schemaRegistry+ ssl + Properties().apply {
+    val producer: Properties = kStreams + schemaRegistry + ssl + Properties().apply {
         this[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = brokers
         this[ProducerConfig.ACKS_CONFIG] = "all"
         this[ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION] = "5"

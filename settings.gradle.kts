@@ -1,8 +1,8 @@
 rootProject.name = "personopplysninger"
 
-include("app")
-
 include(
+    "app",
     "libs:kafka",
+    "libs:kafka-test",
     "models:personopplysninger"
 )

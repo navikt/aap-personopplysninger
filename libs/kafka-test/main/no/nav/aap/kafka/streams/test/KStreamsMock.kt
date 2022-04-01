@@ -1,4 +1,4 @@
-package personopplysninger
+package no.nav.aap.kafka.streams.test
 
 import no.nav.aap.kafka.KafkaConfig
 import no.nav.aap.kafka.plus

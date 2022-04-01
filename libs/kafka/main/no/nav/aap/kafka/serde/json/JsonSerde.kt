@@ -1,4 +1,4 @@
-package no.nav.aap.kafka.serde
+package no.nav.aap.kafka.serde.json
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper

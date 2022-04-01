@@ -9,7 +9,7 @@ import io.ktor.server.routing.*
 import model.Personopplysninger
 import model.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
-import no.nav.aap.kafka.serde.JsonSerde
+import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*
 import org.apache.kafka.streams.kstream.Branched
 import pdl.api.AzureClient

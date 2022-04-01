@@ -1,15 +1,5 @@
 package personopplysninger.pdl.streams
 
-import model.Personopplysninger
-import no.nav.aap.kafka.avro.array
-import no.nav.aap.kafka.avro.generic
-import no.nav.aap.kafka.avro.string
-import no.nav.aap.kafka.streams.*
-import org.apache.avro.generic.GenericRecord
-import org.apache.kafka.streams.StreamsBuilder
-import org.apache.kafka.streams.kstream.KTable
-import personopplysninger.Topics
-import personopplysninger.pdl.api.PdlGraphQLClient
 //
 //internal class LeesahStream(
 //    private val pdl: PdlGraphQLClient,

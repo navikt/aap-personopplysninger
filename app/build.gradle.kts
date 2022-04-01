@@ -24,9 +24,9 @@ dependencies {
     implementation(project(":models:personopplysninger"))
 
     testImplementation(kotlin("test"))
+    testImplementation(project(":libs:kafka-test"))
     testImplementation("uk.org.webcompere:system-stubs-jupiter:2.0.1")
     testImplementation("io.ktor:ktor-server-test-host:2.0.0-beta-1")
-    testImplementation("org.apache.kafka:kafka-streams-test-utils:3.1.0")
 }
 
 tasks {

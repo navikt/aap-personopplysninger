@@ -1,4 +1,4 @@
-package no.nav.aap.kafka.avro
+package no.nav.aap.kafka.serde.avro
 
 import org.apache.avro.generic.GenericData
 import org.apache.avro.generic.GenericRecord
