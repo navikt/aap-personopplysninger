@@ -1,4 +1,4 @@
-name: Deploy
+name: App
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
       - uses: dorny/test-reporter@v1.5.0
         if: always()
         with:
-          name: 🧬 Test results
+          name: Test results
           path: "app/build/test-results/test/TEST-*.xml"
           reporter: java-junit
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -42,16 +42,17 @@ jobs:
           docker build --pull --tag ${{ env.IMAGE }} --tag ghcr.io/${{ github.repository }}:latest .
           docker push ghcr.io/navikt/${{ github.repository }} --all-tags
 
-  deploy:
+  deploy-dev:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: nais/deploy/actions/deploy@v1
+        name: Deploy to dev
         env:
           PRINT_PAYLOAD: true
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: app/nais.yml
-          VARS: app/dev.yml
+          RESOURCE: .nais/app.yml
+          VARS: .nais/dev.yml

@@ -5,7 +5,6 @@ metadata:
   namespace: aap
   labels:
     team: aap
-    group: personopplysninger
   annotations:
     githubUrl: "https://github.com/navikt/aap-personopplysninger"
 spec:

@@ -1,0 +1,23 @@
+name: Topics
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'app/topic-medlem.yml'
+      - '.github/workflows/deploy-topic.yml'
+
+jobs:
+  personopplysningerV1:
+    name: aap.personopplysninger.v1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/topic.yml
+          VARS: .nais/dev.yml
+          PRINT_PAYLOAD: true
