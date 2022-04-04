@@ -25,15 +25,15 @@ private val log = LoggerFactory.getLogger(PdlGraphQLClient::class.java)
 
 internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val azureConfig: AzureConfig) {
     private val httpClient = HttpClient(CIO) {
+        install(HttpTimeout)
+        install(HttpRequestRetry)
+        install(Auth) { azureAD(azureConfig, pdlConfig.scope) }
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        install(Auth) { azureAD(azureConfig, pdlConfig.scope) }
-        install(HttpTimeout)
-        install(HttpRequestRetry)
     }
 
     suspend fun hentAlt(personident: String) = query(PdlRequest.hentAlt(personident))
