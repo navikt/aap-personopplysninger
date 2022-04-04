@@ -9,7 +9,7 @@ import personopplysninger.Topics
 
 fun skjermingStream(skjermingTable: GlobalKTable<String, SkjermetDto>) = { chain: KStream<String, Personopplysninger> ->
     chain
-        .leftJoin(::keyMapper, skjermingTable, ::valueJoiner)
+        .leftJoin(keyMapper, skjermingTable, ::valueJoiner)
         .mapValues { (personopplysninger, skjerming) ->
             personopplysninger.apply {
                 settSkjerming(
@@ -22,6 +22,5 @@ fun skjermingStream(skjermingTable: GlobalKTable<String, SkjermetDto>) = { chain
         .produce(Topics.personopplysninger) { "produced-personopplysning-skjermet" }
 }
 
-
-private fun keyMapper(personident: String, person: Personopplysninger): String = personident
+private val keyMapper: (String, Personopplysninger) -> String = { personident, _ -> personident }
 private fun valueJoiner(person: Personopplysninger, skjerming: SkjermetDto?) = person to skjerming
