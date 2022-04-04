@@ -27,7 +27,6 @@ private const val validToken = """
 {
   "token_type": "Bearer",
   "expires_in": 3599,
-  "ext_expires_in": 3599,
   "access_token": "very.secure.token"
 }
 """

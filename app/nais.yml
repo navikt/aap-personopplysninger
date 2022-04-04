@@ -50,6 +50,8 @@ spec:
       value: {{pdl.scope}}
     - name: LOG_APPENDER
       value: json
+    - name: SECURE_LOG_APPENDER
+      value: secureLog
     - name: KAFKA_SECURITY_ENABLED
       value: "true"
     - name: PROXY_BASEURL

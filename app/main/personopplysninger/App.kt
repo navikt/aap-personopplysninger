@@ -11,9 +11,8 @@ import model.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*
+import no.nav.aap.ktor.client.AzureConfig
 import org.apache.kafka.streams.kstream.Branched
-import pdl.api.AzureClient
-import pdl.api.AzureConfig
 import personopplysninger.norg.NorgProxyClient
 import personopplysninger.norg.ProxyConfig
 import personopplysninger.norg.norgStream
@@ -46,14 +45,14 @@ object Tables {
     val skjerming = Table("skjerming", Topics.skjerming, true)
 }
 
-fun Application.personopplysninger(kStreams: Kafka = KStreams) {
+fun Application.personopplysninger(
+    kafka: Kafka = KStreams,
+) {
     val config = ConfigLoader { addDefaultParsers() }.loadConfigOrThrow<Config>("/config.yml")
-
-    val azureClient = AzureClient(config.azure)
-    val pdlClient = PdlGraphQLClient(config.pdl, azureClient)
+    val pdlClient = PdlGraphQLClient(config.pdl, config.azure)
     val norgClient = NorgProxyClient(config.proxy)
 
-    kStreams.start(config.kafka) {
+    kafka.start(config.kafka) {
         val personopplysninger = consume(Topics.personopplysninger)
             .filterNotNull { "skip-personopplysning-tombstone" }
             .mapValues(PersonopplysningerDto::restore)

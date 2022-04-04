@@ -26,7 +26,9 @@ internal fun pdlMock() = embeddedServer(Netty, port = 0) {
     install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
     routing {
         post("/graphql") {
-            require(call.request.headers["Authorization"] == "Bearer very.secure.token")
+            require(call.request.headers["Authorization"] == "Bearer very.secure.token") { "missing token" }
+            require(call.request.headers["TEMA"] == "AAP") { "missing tema" }
+            log.info("received call-id: ${call.request.headers["Nav-Call-Id"]}")
             val requested = call.receive<PdlRequest>()
             when (requested.variables.ident) {
                 KOMMUNE_PERSON -> call.respondText(gtKommune, Application.Json)

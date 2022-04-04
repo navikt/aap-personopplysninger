@@ -7,26 +7,27 @@ plugins {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-netty:2.0.0-beta-1")
-    implementation("io.ktor:ktor-server-core:2.0.0-beta-1")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.0.0-beta-1")
-    implementation("io.ktor:ktor-client-core:2.0.0-beta-1")
     implementation("io.ktor:ktor-client-cio:2.0.0-beta-1")
     implementation("io.ktor:ktor-client-content-negotiation:2.0.0-beta-1")
+    implementation("io.ktor:ktor-client-core:2.0.0-beta-1")
     implementation("io.ktor:ktor-serialization-jackson:2.0.0-beta-1")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.0.3")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.0.0-beta-1")
+    implementation("io.ktor:ktor-server-core:2.0.0-beta-1")
+    implementation("io.ktor:ktor-server-netty:2.0.0-beta-1")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.0.3")
 
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.0.1")
 
     implementation(project(":libs:kafka"))
+    implementation(project(":libs:ktor-client-auth"))
     implementation(project(":models:personopplysninger"))
 
     testImplementation(kotlin("test"))
     testImplementation(project(":libs:kafka-test"))
-    testImplementation("uk.org.webcompere:system-stubs-jupiter:2.0.1")
     testImplementation("io.ktor:ktor-server-test-host:2.0.0-beta-1")
+    testImplementation("uk.org.webcompere:system-stubs-jupiter:2.0.1")
 }
 
 tasks {
