@@ -10,7 +10,7 @@ metadata:
     githubUrl: "https://github.com/navikt/aap-personopplysninger"
     format: json
 spec:
-  pool: {{kafka-pool}}
+  pool: {{kafka.pool}}
   config:
     cleanupPolicy: compact,delete
     partitions: 2
