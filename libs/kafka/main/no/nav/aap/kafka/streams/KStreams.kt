@@ -23,28 +23,28 @@ private val secureLog = LoggerFactory.getLogger("secureLog")
 
 interface Kafka : AutoCloseable {
     fun start(kafkaConfig: KafkaConfig, streamsBuilder: StreamsBuilder.() -> Unit)
-    fun started(): Boolean
-    fun healthy(): Boolean
+    fun isReady(): Boolean
+    fun isLive(): Boolean
     fun <V> getStore(name: String): Store<V>
 }
 
 object KStreams : Kafka {
     private lateinit var streams: KafkaStreams
-    private var started: Boolean = false
+    private var isInitiallyStarted: Boolean = false
 
     override fun start(kafkaConfig: KafkaConfig, streamsBuilder: StreamsBuilder.() -> Unit) {
         val topology = StreamsBuilder().apply(streamsBuilder).build()
         streams = KafkaStreams(topology, kafkaConfig.consumer + kafkaConfig.producer).apply {
             setUncaughtExceptionHandler(ProcessingExceptionHandler())
-            setStateListener { newState, _ -> if (newState == RUNNING) started = true }
+            setStateListener { state, _ -> if (state == RUNNING) isInitiallyStarted = true }
             start()
         }
     }
 
     override fun <V> getStore(name: String): Store<V> = streams.store(fromNameAndType<Store<V>>(name, keyValueStore()))
-    override fun started() = started
+    override fun isReady() = isInitiallyStarted && streams.state() in listOf(CREATED, RUNNING, REBALANCING)
+    override fun isLive() = isInitiallyStarted && streams.state() != ERROR
     override fun close() = streams.close()
-    override fun healthy(): Boolean = streams.state() in listOf(CREATED, RUNNING, REBALANCING)
 }
 
 fun named(named: String): Named = Named.`as`(named)

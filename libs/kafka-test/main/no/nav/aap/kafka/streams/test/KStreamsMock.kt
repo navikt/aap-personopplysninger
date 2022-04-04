@@ -22,8 +22,8 @@ class KStreamsMock : Kafka {
     inline fun <reified V : Any> outputTopic(topic: Topic<V>): TestOutputTopic<String, V> =
         streams.createOutputTopic(topic.name, topic.keySerde.deserializer(), topic.valueSerde.deserializer())
 
-    override fun started() = true
-    override fun healthy() = true
+    override fun isReady() = true
+    override fun isLive() = true
     override fun <V> getStore(name: String): Store<V> = streams.getKeyValueStore(name)
     override fun close() = streams.close()
 

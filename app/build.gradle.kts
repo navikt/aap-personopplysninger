@@ -16,7 +16,10 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:2.0.0-beta-1")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.0.3")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.0.4")
+
+    implementation("io.ktor:ktor-server-metrics-micrometer-jvm:2.0.0-beta-1")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.8.4")
 
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.0.1")
 

@@ -162,7 +162,7 @@ private val strengtFortrolig = PersonopplysningerDto(adressebeskyttelse = "STREN
 private val strengtFortroligUtland = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG_UTLAND")
 private val enhet = PersonopplysningerDto(norgEnhetId = "4201")
 
-private fun testApp(block: ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mocks().use { mocks ->
+private fun testApp(block: suspend ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mocks().use { mocks ->
     val externalProperties = mapOf(
         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${mocks.oauth.port}/token",
         "AZURE_APP_CLIENT_ID" to "test",
@@ -173,7 +173,6 @@ private fun testApp(block: ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mock
         "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
         "KAFKA_BROKERS" to "mock://kafka",
         "KAFKA_TRUSTSTORE_PATH" to "",
-        "KAFKA_SECURITY_ENABLED" to "false",
         "KAFKA_KEYSTORE_PATH" to "",
         "KAFKA_CREDSTORE_PASSWORD" to "",
         "KAFKA_CLIENT_ID" to "personopplysninger",
@@ -182,7 +181,7 @@ private fun testApp(block: ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mock
         testApplication {
             application {
                 personopplysninger(mocks.kafka)
-                block(mocks)
+                runBlocking { block(mocks) }
             }
         }
     }

@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="pretty" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n
-            </pattern>
-        </encoder>
-    </appender>
-
     <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
-    <appender name="secureLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="secure" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/secure-logs/secure.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <fileNamePattern>/secure-logs/secure.log.%i</fileNamePattern>
@@ -25,21 +18,16 @@
     </appender>
 
     <logger name="secureLog" level="INFO" additivity="false">
-        <appender-ref ref="${SECURE_LOG_APPENDER:-pretty}"/>
+        <appender-ref ref="secure"/>
     </logger>
 
-    <logger name="no.nav.aap.app" level="TRACE" additivity="false">
-        <appender-ref ref="${LOG_APPENDER:-pretty}"/>
-    </logger>
-
-    <logger name="kafka" level="WARN"/>
-    <logger name="io.confluent.kafka.serializers" level="WARN"/>
+    <logger name="io.confluent" level="WARN"/>
     <logger name="org.apache.zookeeper" level="WARN"/>
     <logger name="org.apache.kafka" level="WARN" additivity="false">
-        <appender-ref ref="${LOG_APPENDER:-pretty}"/>
+        <appender-ref ref="json"/>
     </logger>
 
-    <root level="${LOG_LEVEL:-INFO}">
-        <appender-ref ref="${LOG_APPENDER:-pretty}"/>
+    <root level="INFO">
+        <appender-ref ref="json"/>
     </root>
 </configuration>

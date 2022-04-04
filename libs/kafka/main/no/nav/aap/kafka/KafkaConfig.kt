@@ -19,7 +19,6 @@ data class KafkaConfig(
     val applicationId: String,
     val brokers: String,
     val clientId: String,
-    val security: Boolean,
     val truststorePath: String,
     val keystorePath: String,
     val credstorePsw: String,
@@ -27,11 +26,10 @@ data class KafkaConfig(
     val schemaRegistryUser: String?,
     val schemaRegistryPwd: String?,
 ) {
-
     internal val schemaRegistry: Properties = Properties().apply {
         if (schemaRegistryUrl != null) {
             this[AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG] = schemaRegistryUrl
-            if (security) {
+            if (keystorePath.isNotEmpty()) {
                 this[SchemaRegistryClientConfig.BASIC_AUTH_CREDENTIALS_SOURCE] = "USER_INFO"
                 this[SchemaRegistryClientConfig.USER_INFO_CONFIG] = "$schemaRegistryUser:$schemaRegistryPwd"
             }
@@ -50,7 +48,7 @@ data class KafkaConfig(
     }
 
     val ssl: Properties = Properties().apply {
-        if (security) {
+        if (keystorePath.isNotEmpty()) {
             this[CommonClientConfigs.SECURITY_PROTOCOL_CONFIG] = "SSL"
             this[SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG] = "JKS"
             this[SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG] = truststorePath

@@ -5,13 +5,10 @@ plugins {
 }
 
 dependencies {
-    val ktor_version = "2.0.0-beta-1"
-
-    api("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    api("io.ktor:ktor-serialization-jackson:$ktor_version")
-    api("io.ktor:ktor-client-core:$ktor_version")
-    api("io.ktor:ktor-client-cio:$ktor_version")
-    api("io.ktor:ktor-client-auth:$ktor_version")
+    api("io.ktor:ktor-client-content-negotiation:2.0.0-beta-1")
+    api("io.ktor:ktor-serialization-jackson:2.0.0-beta-1")
+    api("io.ktor:ktor-client-cio:2.0.0-beta-1")
+    api("io.ktor:ktor-client-auth:2.0.0-beta-1")
     api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
 }
 
@@ -22,6 +19,3 @@ tasks {
 }
 
 kotlin.sourceSets["main"].kotlin.srcDirs("main")
-kotlin.sourceSets["test"].kotlin.srcDirs("test")
-sourceSets["main"].resources.srcDirs("main")
-sourceSets["test"].resources.srcDirs("test")

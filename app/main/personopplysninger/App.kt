@@ -3,9 +3,11 @@ package personopplysninger
 import com.sksamuel.hoplite.ConfigLoader
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
+import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
 import model.Personopplysninger
 import model.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
@@ -49,6 +51,10 @@ fun Application.personopplysninger(
     kafka: Kafka = KStreams,
 ) {
     val config = ConfigLoader { addDefaultParsers() }.loadConfigOrThrow<Config>("/config.yml")
+    val prometheus = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+
+    install(MicrometerMetrics) { registry = prometheus }
+
     val pdlClient = PdlGraphQLClient(config.pdl, config.azure)
     val norgClient = NorgProxyClient(config.proxy)
 
@@ -59,7 +65,6 @@ fun Application.personopplysninger(
 //        val personopplysningerTable = personopplysninger.produce(Tables.personopplysninger)
         val skjermingTable = globalTable(Tables.skjerming)
 
-        // behov streams
         personopplysninger.split()
             .branch(erSkjermingStream, Branched.withConsumer(skjermingStream(skjermingTable)))
             .branch(erPdlStream, Branched.withConsumer(pdlStream(pdlClient)))
@@ -71,16 +76,14 @@ fun Application.personopplysninger(
     }
 
     routing {
-        get("actuator/healthy") {
-            // TODO: vent til kafka.started()
-            call.respondText("healthy")
-        }
+        actuators(prometheus, kafka)
     }
 }
 
 private val erSkjermingStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
     personopplysning.kanSetteSkjerming()
 }
+
 private val erPdlStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
     personopplysning.kanSetteAdressebeskyttelse() || personopplysning.kanSetteGeografiskTilknytning()
 }
