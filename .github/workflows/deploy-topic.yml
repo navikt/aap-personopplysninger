@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'app/topic-medlem.yml'
+      - 'app/topic.yml'
       - '.github/workflows/deploy-topic.yml'
 
 jobs:
