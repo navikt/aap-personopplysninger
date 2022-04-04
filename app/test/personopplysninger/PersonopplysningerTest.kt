@@ -137,10 +137,9 @@ class PersonopplysningerTest {
             .hasNumberOfRecordsForKey(STRENGT_FORTROLIG_UTLAND_PERSON, 3)
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 0) { ikkeSkjermet }
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 1) { ikkeSkjermet + gtKommune + strengtFortroligUtland }
-            .hasValueEquals(
-                STRENGT_FORTROLIG_UTLAND_PERSON,
-                2
-            ) { ikkeSkjermet + gtKommune + strengtFortroligUtland + enhet }
+            .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 2) {
+                ikkeSkjermet + gtKommune + strengtFortroligUtland + enhet
+            }
     }
 }
 
@@ -163,21 +162,7 @@ private val strengtFortroligUtland = PersonopplysningerDto(adressebeskyttelse = 
 private val enhet = PersonopplysningerDto(norgEnhetId = "4201")
 
 private fun testApp(block: suspend ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mocks().use { mocks ->
-    val externalProperties = mapOf(
-        "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${mocks.oauth.port}/token",
-        "AZURE_APP_CLIENT_ID" to "test",
-        "AZURE_APP_CLIENT_SECRET" to "test",
-        "PROXY_BASEURL" to "http://localhost:${mocks.norg.port}",
-        "PDL_URL" to "http://localhost:${mocks.pdl.port}/graphql",
-        "PDL_SCOPE" to "test",
-        "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
-        "KAFKA_BROKERS" to "mock://kafka",
-        "KAFKA_TRUSTSTORE_PATH" to "",
-        "KAFKA_KEYSTORE_PATH" to "",
-        "KAFKA_CREDSTORE_PASSWORD" to "",
-        "KAFKA_CLIENT_ID" to "personopplysninger",
-    )
-    EnvironmentVariables(externalProperties).execute {
+    EnvironmentVariables(containerProperties(mocks)).execute {
         testApplication {
             application {
                 personopplysninger(mocks.kafka)
@@ -205,3 +190,18 @@ private class Mocks : AutoCloseable {
     }
 }
 
+/** Mock the external properties used from within a nais pod */
+private fun containerProperties(mocks: Mocks) = mapOf(
+    "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${mocks.oauth.port}/token",
+    "AZURE_APP_CLIENT_ID" to "test",
+    "AZURE_APP_CLIENT_SECRET" to "test",
+    "PROXY_BASEURL" to "http://localhost:${mocks.norg.port}",
+    "PDL_URL" to "http://localhost:${mocks.pdl.port}/graphql",
+    "PDL_SCOPE" to "test",
+    "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
+    "KAFKA_BROKERS" to "mock://kafka",
+    "KAFKA_TRUSTSTORE_PATH" to "",
+    "KAFKA_KEYSTORE_PATH" to "",
+    "KAFKA_CREDSTORE_PASSWORD" to "",
+    "KAFKA_CLIENT_ID" to "personopplysninger",
+)

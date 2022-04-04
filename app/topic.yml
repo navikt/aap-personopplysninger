@@ -1,0 +1,29 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: personopplysninger.v1
+  namespace: aap
+  labels:
+    team: aap
+  annotations:
+    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
+    githubUrl: "https://github.com/navikt/aap-personopplysninger"
+    format: json
+spec:
+  pool: {{kafka-pool}}
+  config:
+    cleanupPolicy: compact,delete
+    partitions: 2
+    retentionHours: 1
+  acl:
+    - team: aap
+      application: personopplysninger
+      access: readwrite
+
+    - team: aap
+      application: vedtak
+      access: readwrite
+
+    - team: aap
+      application: aap-kafka-manager
+      access: read
