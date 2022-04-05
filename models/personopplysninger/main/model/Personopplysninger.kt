@@ -8,10 +8,6 @@ class Personopplysninger private constructor(
     private var gt: String? = null,
     private var skjerming: Skjerming? = null,
 ) {
-    private class Skjerming(val fom: LocalDate?, val tom: LocalDate?) {
-        fun erSkjermet(): Boolean = fom != null && (tom == null || tom >= LocalDate.now())
-    }
-
     fun settEnhet(enhetId: String) = let { if (norgEnhetId == null) norgEnhetId = enhetId }
     fun settSkjerming(fom: LocalDate?, tom: LocalDate?) = let { if (skjerming == null) skjerming = Skjerming(fom, tom) }
     fun settTilhørendeBydel(bydel: String) = let { if (gt == null) gt = bydel }
@@ -25,6 +21,14 @@ class Personopplysninger private constructor(
     fun kanSetteAdressebeskyttelse() = adresseeskyttelse == null
     fun kanSetteGeografiskTilknytning() = gt == null
     fun kanSetteSkjerming() = skjerming == null
+
+    private class Skjerming(val fom: LocalDate?, val tom: LocalDate?) {
+        fun erSkjermet(): Boolean = fom != null && (tom == null || tom >= LocalDate.now())
+    }
+
+    companion object {
+        fun opprettForOppdatering() = Personopplysninger()
+    }
 
     fun toDto() = PersonopplysningerDto(
         norgEnhetId = norgEnhetId,

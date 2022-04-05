@@ -11,6 +11,7 @@ import io.micrometer.prometheus.PrometheusMeterRegistry
 import model.Personopplysninger
 import model.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
+import no.nav.aap.kafka.serde.avro.AvroSerde
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*
 import no.nav.aap.ktor.client.AzureConfig
@@ -20,6 +21,7 @@ import personopplysninger.norg.ProxyConfig
 import personopplysninger.norg.norgStream
 import personopplysninger.pdl.api.PdlConfig
 import personopplysninger.pdl.api.PdlGraphQLClient
+import personopplysninger.pdl.streams.leesahStream
 import personopplysninger.pdl.streams.pdlStream
 import personopplysninger.skjerming.SkjermetDto
 import personopplysninger.skjerming.skjermingStream
@@ -36,7 +38,7 @@ internal data class Config(
 )
 
 object Topics {
-    //    val leesah = Topic("aapen-person-pdl-leesah-v1", AvroSerde.generic())
+    val leesah = Topic("aapen-person-pdl-leesah-v1", AvroSerde.generic())
     val skjerming = Topic("nom.skjermede-personer-v1", JsonSerde.jackson<SkjermetDto>())
     val personopplysninger = Topic("aap.personopplysninger.v1", JsonSerde.jackson<PersonopplysningerDto>())
 //    val geografiskTilknytning = Topic("aapen-pdl-geografisktilknytning-v1", JsonSerde.jackson<String>())
@@ -71,7 +73,7 @@ fun Application.personopplysninger(
             .branch(erNorgStream, Branched.withConsumer(norgStream(norgClient)))
 
         // update streams
-//        LeesahStream(pdlClient, personopplysningerTable, this)
+        leesahStream()
 //        GeografiskTilknytningStream(this)
     }
 
