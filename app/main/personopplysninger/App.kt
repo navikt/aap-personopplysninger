@@ -38,7 +38,7 @@ internal data class Config(
 )
 
 object Topics {
-    val leesah = Topic("aapen-person-pdl-leesah-v1", AvroSerde.generic())
+//    val leesah = Topic("aapen-person-pdl-leesah-v1", AvroSerde.generic())
     val skjerming = Topic("nom.skjermede-personer-v1", JsonSerde.jackson<SkjermetDto>())
     val personopplysninger = Topic("aap.personopplysninger.v1", JsonSerde.jackson<PersonopplysningerDto>())
 //    val geografiskTilknytning = Topic("aapen-pdl-geografisktilknytning-v1", JsonSerde.jackson<String>())

@@ -10,13 +10,13 @@ import org.apache.kafka.streams.StreamsBuilder
 import personopplysninger.Topics
 
 fun StreamsBuilder.leesahStream() = this
-    .consume(Topics.leesah)
-    .filterNotNull { "skip-leesah-tombstone" }
-    .filter(::isAdressebeskyttelse) { "filter-is-adressebeskyttelse" }
-    .selectKey("name") { _, value -> value.personidenter.single { it.length == 11 } }
-    .mapValues(::toAddressebeskyttelse)
-    .mapValues(Personopplysninger::toDto)
-    .produce(Topics.personopplysninger) { "person-with-adressebeskyttelse" }
+//    .consume(Topics.leesah)
+//    .filterNotNull { "skip-leesah-tombstone" }
+//    .filter(::isAdressebeskyttelse) { "filter-is-adressebeskyttelse" }
+//    .selectKey("name") { _, value -> value.personidenter.single { it.length == 11 } }
+//    .mapValues(::toAddressebeskyttelse)
+//    .mapValues(Personopplysninger::toDto)
+//    .produce(Topics.personopplysninger) { "person-with-adressebeskyttelse" }
 
 // https://github.com/navikt/pdl/blob/master/libs/contract-pdl-avro/src/main/java/no/nav/person/identhendelse/Opplysningstype.java
 private fun isAdressebeskyttelse(personident: String, hendelse: GenericRecord): Boolean {
