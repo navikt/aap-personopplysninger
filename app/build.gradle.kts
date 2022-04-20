@@ -21,7 +21,7 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer-jvm:2.0.0")
     implementation("io.micrometer:micrometer-registry-prometheus:1.8.4")
 
-    runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.0.1")
+    runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
     implementation(project(":libs:kafka"))
     implementation(project(":libs:ktor-client-auth"))
