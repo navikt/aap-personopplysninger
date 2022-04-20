@@ -13,7 +13,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:2.0.0-beta-1")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.0.0-beta-1")
     implementation("io.ktor:ktor-server-core:2.0.0-beta-1")
-    implementation("io.ktor:ktor-server-netty:2.0.0-beta-1")
+    implementation("io.ktor:ktor-server-netty:2.0.1-eap-371")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
     implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.2")
