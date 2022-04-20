@@ -7,7 +7,7 @@ plugins {
 dependencies {
     api(project(":libs:kafka"))
     api(kotlin("test"))
-    api("org.apache.kafka:kafka-streams-test-utils:3.1.0")
+    api("org.apache.kafka:kafka-streams-test-utils:7.1.1-ce")
 }
 
 tasks {
