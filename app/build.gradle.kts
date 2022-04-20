@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-cio:2.0.0-beta-1")
+    implementation("io.ktor:ktor-client-cio:2.0.1-eap-371")
     implementation("io.ktor:ktor-client-content-negotiation:2.0.0-beta-1")
     implementation("io.ktor:ktor-client-core:2.0.0-beta-1")
     implementation("io.ktor:ktor-serialization-jackson:2.0.0-beta-1")
