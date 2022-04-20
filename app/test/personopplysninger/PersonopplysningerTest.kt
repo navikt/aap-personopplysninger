@@ -161,12 +161,12 @@ private val strengtFortrolig = PersonopplysningerDto(adressebeskyttelse = "STREN
 private val strengtFortroligUtland = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG_UTLAND")
 private val enhet = PersonopplysningerDto(norgEnhetId = "4201")
 
-private fun testApp(block: suspend ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mocks().use { mocks ->
+private fun testApp(test: suspend ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mocks().use { mocks ->
     EnvironmentVariables(containerProperties(mocks)).execute {
         testApplication {
             application {
                 personopplysninger(mocks.kafka)
-                runBlocking { block(mocks) }
+                runBlocking { this@testApplication.test(mocks) }
             }
         }
     }

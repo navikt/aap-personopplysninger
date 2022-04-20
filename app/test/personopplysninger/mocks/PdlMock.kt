@@ -6,7 +6,7 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -28,7 +28,6 @@ internal fun pdlMock() = embeddedServer(Netty, port = 0) {
         post("/graphql") {
             require(call.request.headers["Authorization"] == "Bearer very.secure.token") { "missing token" }
             require(call.request.headers["TEMA"] == "AAP") { "missing tema" }
-            log.info("received call-id: ${call.request.headers["Nav-Call-Id"]}")
             val requested = call.receive<PdlRequest>()
             when (requested.variables.ident) {
                 KOMMUNE_PERSON -> call.respondText(gtKommune, Application.Json)
