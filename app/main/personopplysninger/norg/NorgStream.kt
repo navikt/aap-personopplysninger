@@ -6,7 +6,6 @@ import no.nav.aap.kafka.streams.produce
 import org.apache.kafka.streams.kstream.KStream
 import personopplysninger.Topics
 
-// TODO: bytt access policy hos nom/skjerming
 internal fun norgStream(norgClient: NorgProxyClient) = { chain: KStream<String, Personopplysninger> ->
     chain
         .mapValues { personopplysninger -> settEnhet(personopplysninger, norgClient) }
