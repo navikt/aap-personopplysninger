@@ -11,7 +11,6 @@ import io.micrometer.prometheus.PrometheusMeterRegistry
 import model.Personopplysninger
 import model.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
-import no.nav.aap.kafka.serde.avro.AvroSerde
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*
 import no.nav.aap.ktor.client.AzureConfig
@@ -68,9 +67,9 @@ fun Application.personopplysninger(
         val skjermingTable = globalTable(Tables.skjerming)
 
         personopplysninger.split()
-            .branch(erSkjermingStream, Branched.withConsumer(skjermingStream(skjermingTable)))
-            .branch(erPdlStream, Branched.withConsumer(pdlStream(pdlClient)))
-            .branch(erNorgStream, Branched.withConsumer(norgStream(norgClient)))
+            .branch(isSkjermingStream, Branched.withConsumer(skjermingStream(skjermingTable)))
+            .branch(isPdlStream, Branched.withConsumer(pdlStream(pdlClient)))
+            .branch(isNorgStream, Branched.withConsumer(norgStream(norgClient)))
 
         // update streams
         leesahStream()
@@ -82,14 +81,14 @@ fun Application.personopplysninger(
     }
 }
 
-private val erSkjermingStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
+private val isSkjermingStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
     personopplysning.kanSetteSkjerming()
 }
 
-private val erPdlStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
+private val isPdlStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
     personopplysning.kanSetteAdressebeskyttelse() || personopplysning.kanSetteGeografiskTilknytning()
 }
 
-private val erNorgStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
+private val isNorgStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
     personopplysning.kanSetteEnhet()
 }

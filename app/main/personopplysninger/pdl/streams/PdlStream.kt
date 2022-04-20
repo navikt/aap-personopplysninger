@@ -5,23 +5,25 @@ import model.Personopplysninger
 import no.nav.aap.kafka.streams.produce
 import org.apache.kafka.streams.kstream.KStream
 import personopplysninger.Topics
+import personopplysninger.pdl.api.PdlData
 import personopplysninger.pdl.api.PdlGraphQLClient
 
 internal fun pdlStream(pdlClient: PdlGraphQLClient) = { chain: KStream<String, Personopplysninger> ->
     chain
         .mapValues { personident, personopplysninger ->
-            // fixme: dette kan gjøres penere
+            val response = runBlocking { pdlClient.hentAlt(personident) }
             personopplysninger.apply {
-                val response = runBlocking { pdlClient.hentAlt(personident) }
-                settAdressebeskyttelse(response.adressebeskyttelse?.gradering)
-                response.geografiskTilknytning.let { gt ->
-                    gt.gtBydel?.let { settTilhørendeBydel(it) }
-                        ?: gt.gtKommune?.let { settTilhørendeKommune(it) }
-                        ?: gt.gtLand?.let { settTilhørendeLand(it) }
-                        ?: error("skal denne være 'uten fast bopel'") // TODO: hør med PDL
-                }
+                personopplysninger.settAdressebeskyttelse(response.adressebeskyttelse?.gradering)
+                personopplysninger.settGeografiskTilknytning(response.geografiskTilknytning)
             }
         }
         .mapValues(Personopplysninger::toDto)
         .produce(Topics.personopplysninger) { "produced-personopplysning-pdl" }
+}
+
+private fun Personopplysninger.settGeografiskTilknytning(gt: PdlData.GeografiskTilknytning) {
+    gt.gtBydel?.let(::settTilhørendeBydel)
+        ?: gt.gtKommune?.let(::settTilhørendeKommune)
+        ?: gt.gtLand?.let(::settTilhørendeLand)
+        ?: error("skal denne være 'uten fast bopel'") // TODO: hør med PDL
 }
