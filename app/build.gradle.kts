@@ -27,7 +27,7 @@ dependencies {
 
     implementation("io.ktor:ktor-client-auth:2.0.0")
     implementation("org.apache.kafka:kafka-streams:3.1.0")
-    implementation("io.confluent:kafka-streams-avro-serde:7.0.1") {
+    implementation("io.confluent:kafka-streams-avro-serde:7.1.1") {
         exclude("org.apache.kafka", "kafka-clients")
     }
 
