@@ -26,7 +26,7 @@ dependencies {
     implementation("com.github.navikt.aap-libs:ktor-client-auth:0.0.9")
 
     implementation("io.ktor:ktor-client-auth:2.0.0")
-    implementation("org.apache.kafka:kafka-streams:3.1.0")
+    implementation("org.apache.kafka:kafka-streams:7.1.1-ce")
     implementation("io.confluent:kafka-streams-avro-serde:7.0.1") {
         exclude("org.apache.kafka", "kafka-clients")
     }
