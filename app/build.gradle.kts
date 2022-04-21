@@ -23,7 +23,7 @@ dependencies {
 
 
     implementation("com.github.navikt.aap-libs:kafka:0.0.9")
-    implementation("com.github.navikt.aap-libs:ktor-client-auth:0.0.9")
+    implementation("com.github.navikt.aap-libs:ktor-client-auth:0.0.12")
 
     implementation("io.ktor:ktor-client-auth:2.0.0")
     implementation("org.apache.kafka:kafka-streams:3.1.0")
