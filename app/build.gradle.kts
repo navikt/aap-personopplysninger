@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm")
     id("com.github.johnrengelman.shadow")
@@ -23,20 +21,24 @@ dependencies {
 
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
-    implementation(project(":libs:kafka"))
-    implementation(project(":libs:ktor-client-auth"))
+
+    implementation("com.github.navikt.aap-libs:kafka:0.0.9")
+    implementation("com.github.navikt.aap-libs:ktor-client-auth:0.0.9")
+
+    implementation("io.ktor:ktor-client-auth:2.0.0")
+    implementation("org.apache.kafka:kafka-streams:3.1.0")
+    implementation("io.confluent:kafka-streams-avro-serde:7.0.1") {
+        exclude("org.apache.kafka", "kafka-clients")
+    }
+
     implementation(project(":models:personopplysninger"))
 
     testImplementation(kotlin("test"))
-    testImplementation(project(":libs:kafka-test"))
+
+    testImplementation("com.github.navikt.aap-libs:kafka-test:0.0.9")
+
     testImplementation("io.ktor:ktor-server-test-host:2.0.0")
     testImplementation("uk.org.webcompere:system-stubs-jupiter:2.0.1")
-}
-
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
-    }
 }
 
 application {
