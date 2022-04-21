@@ -22,7 +22,7 @@ dependencies {
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
 
-    implementation("com.github.navikt.aap-libs:kafka:0.0.9")
+    implementation("com.github.navikt.aap-libs:kafka:0.0.12")
     implementation("com.github.navikt.aap-libs:ktor-client-auth:0.0.9")
 
     implementation("io.ktor:ktor-client-auth:2.0.0")
