@@ -4,8 +4,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
-import model.Personopplysninger.PersonopplysningerDto
-import model.Personopplysninger.SkjermingDto
+import personopplysninger.Personopplysninger.PersonopplysningerDto
+import personopplysninger.Personopplysninger.SkjermingDto
 import no.nav.aap.kafka.streams.test.KStreamsMock
 import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.Test

@@ -1,13 +1,11 @@
 package personopplysninger.pdl.streams
 
-import model.Personopplysninger
+import personopplysninger.Personopplysninger
 import no.nav.aap.kafka.serde.avro.array
 import no.nav.aap.kafka.serde.avro.generic
 import no.nav.aap.kafka.serde.avro.string
-import no.nav.aap.kafka.streams.*
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.streams.StreamsBuilder
-import personopplysninger.Topics
 
 fun StreamsBuilder.leesahStream() = this
 //    .consume(Topics.leesah)

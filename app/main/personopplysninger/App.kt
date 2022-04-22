@@ -8,8 +8,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
-import model.Personopplysninger
-import model.Personopplysninger.PersonopplysningerDto
+import personopplysninger.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*

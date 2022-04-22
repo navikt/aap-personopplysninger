@@ -1,6 +1,6 @@
 package personopplysninger.skjerming
 
-import model.Personopplysninger
+import personopplysninger.Personopplysninger
 import no.nav.aap.kafka.streams.leftJoin
 import no.nav.aap.kafka.streams.produce
 import org.apache.kafka.streams.kstream.GlobalKTable

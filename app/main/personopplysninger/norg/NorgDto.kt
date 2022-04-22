@@ -1,6 +1,6 @@
 package personopplysninger.norg
 
-import model.Personopplysninger.PersonopplysningerDto
+import personopplysninger.Personopplysninger.PersonopplysningerDto
 
 internal object Arbeidsfordeling {
     fun createRequest(personDto: PersonopplysningerDto) = ArbeidsfordelingRequest(

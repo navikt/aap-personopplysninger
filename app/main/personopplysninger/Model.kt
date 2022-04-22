@@ -1,4 +1,4 @@
-package model
+package personopplysninger
 
 import java.time.LocalDate
 

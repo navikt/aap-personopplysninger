@@ -1,7 +1,7 @@
 package personopplysninger.pdl.streams
 
 import kotlinx.coroutines.runBlocking
-import model.Personopplysninger
+import personopplysninger.Personopplysninger
 import no.nav.aap.kafka.streams.produce
 import org.apache.kafka.streams.kstream.KStream
 import personopplysninger.Topics
