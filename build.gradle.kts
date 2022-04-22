@@ -20,18 +20,13 @@ subprojects {
         withType<KotlinCompile> {
             kotlinOptions.jvmTarget = "18"
         }
-
         withType<Test> {
             useJUnitPlatform()
-            testLogging {
-                events("PASSED", "SKIPPED", "FAILED")
-            }
         }
     }
 
     kotlin.sourceSets["main"].kotlin.srcDirs("main")
     kotlin.sourceSets["test"].kotlin.srcDirs("test")
-
     sourceSets["main"].resources.srcDirs("main")
     sourceSets["test"].resources.srcDirs("test")
 }

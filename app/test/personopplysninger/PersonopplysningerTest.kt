@@ -8,7 +8,7 @@ import personopplysninger.Personopplysninger.PersonopplysningerDto
 import personopplysninger.Personopplysninger.SkjermingDto
 import no.nav.aap.kafka.streams.test.KStreamsMock
 import no.nav.aap.kafka.streams.test.readAndAssert
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import personopplysninger.Mocks.Companion.port
 import personopplysninger.mocks.*
 import personopplysninger.skjerming.SkjermetDto
