@@ -4,12 +4,12 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
-import personopplysninger.Personopplysninger.PersonopplysningerDto
-import personopplysninger.Personopplysninger.SkjermingDto
-import no.nav.aap.kafka.streams.test.KStreamsMock
+import no.nav.aap.kafka.streams.test.KafkaStreamsMock
 import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.jupiter.api.Test
 import personopplysninger.Mocks.Companion.port
+import personopplysninger.Personopplysninger.PersonopplysningerDto
+import personopplysninger.Personopplysninger.SkjermingDto
 import personopplysninger.mocks.*
 import personopplysninger.skjerming.SkjermetDto
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables
@@ -176,7 +176,7 @@ private class Mocks : AutoCloseable {
     val pdl = pdlMock().apply { start() }
     val oauth = oauthMock().apply { start() }
     val norg = norgProxyMock().apply { start() }
-    val kafka = KStreamsMock()
+    val kafka = KafkaStreamsMock()
 
     companion object {
         val NettyApplicationEngine.port get() = runBlocking { resolvedConnectors() }.first { it.type == ConnectorType.HTTP }.port

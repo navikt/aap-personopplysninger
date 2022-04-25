@@ -8,12 +8,12 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
-import personopplysninger.Personopplysninger.PersonopplysningerDto
 import no.nav.aap.kafka.KafkaConfig
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*
 import no.nav.aap.ktor.client.AzureConfig
 import org.apache.kafka.streams.kstream.Branched
+import personopplysninger.Personopplysninger.PersonopplysningerDto
 import personopplysninger.norg.NorgProxyClient
 import personopplysninger.norg.ProxyConfig
 import personopplysninger.norg.norgStream
@@ -47,9 +47,7 @@ object Tables {
     val skjerming = Table("skjerming", Topics.skjerming, true)
 }
 
-fun Application.personopplysninger(
-    kafka: Kafka = KStreams,
-) {
+fun Application.personopplysninger(kafka: KStreams = KafkaStreams) {
     val config = ConfigLoader { addDefaultParsers() }.loadConfigOrThrow<Config>("/config.yml")
     val prometheus = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
@@ -58,7 +56,7 @@ fun Application.personopplysninger(
     val pdlClient = PdlGraphQLClient(config.pdl, config.azure)
     val norgClient = NorgProxyClient(config.proxy)
 
-    kafka.start(config.kafka) {
+    kafka.start(config.kafka, prometheus) {
         val personopplysninger = consume(Topics.personopplysninger)
             .filterNotNull { "skip-personopplysning-tombstone" }
             .mapValues(PersonopplysningerDto::restore)

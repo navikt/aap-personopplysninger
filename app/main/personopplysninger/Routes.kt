@@ -5,9 +5,9 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheus.PrometheusMeterRegistry
-import no.nav.aap.kafka.streams.Kafka
+import no.nav.aap.kafka.streams.KStreams
 
-fun Routing.actuators(prometheus: PrometheusMeterRegistry, kafka: Kafka) {
+fun Routing.actuators(prometheus: PrometheusMeterRegistry, kafka: KStreams) {
     route("/actuator") {
         get("/metrics") {
             val metrics = prometheus.scrape()
