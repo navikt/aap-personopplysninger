@@ -17,7 +17,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:2.0.0")
     implementation("io.ktor:ktor-server-metrics-micrometer:2.0.0")
 
-    implementation("io.micrometer:micrometer-registry-prometheus:1.8.4")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.8.5")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2") // JavaTimeModule()
     implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.2")
