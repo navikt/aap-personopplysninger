@@ -13,7 +13,7 @@ spec:
   pool: {{kafka.pool}}
   config:
     cleanupPolicy: compact,delete
-    partitions: 2
+    partitions: 12
     retentionHours: 1
   acl:
     - team: aap
