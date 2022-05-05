@@ -25,6 +25,15 @@ subprojects {
         }
     }
 
+    configurations.all {
+        resolutionStrategy {
+            force(
+                "org.apache.kafka:kafka-clients:3.1.0",
+                "org.rocksdb:rocksdbjni:6.29.4.1"
+            )
+        }
+    }
+
     kotlin.sourceSets["main"].kotlin.srcDirs("main")
     kotlin.sourceSets["test"].kotlin.srcDirs("test")
     sourceSets["main"].resources.srcDirs("main")
