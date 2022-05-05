@@ -20,7 +20,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:1.8.5")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2") // JavaTimeModule()
-    implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.2")
+    implementation("com.sksamuel.hoplite:hoplite-yaml:2.1.3")
 
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
