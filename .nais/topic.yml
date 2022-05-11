@@ -21,7 +21,7 @@ spec:
       access: readwrite
 
     - team: aap
-      application: vedtak
+      application: oppgavestyring
       access: readwrite
 
     - team: aap
