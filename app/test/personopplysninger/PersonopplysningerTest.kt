@@ -1,5 +1,7 @@
 package personopplysninger
 
+import io.ktor.server.application.*
+import io.ktor.server.config.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.testing.*
@@ -7,12 +9,10 @@ import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.test.KafkaStreamsMock
 import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.jupiter.api.Test
-import personopplysninger.Mocks.Companion.port
 import personopplysninger.Personopplysninger.PersonopplysningerDto
 import personopplysninger.Personopplysninger.SkjermingDto
 import personopplysninger.mocks.*
 import personopplysninger.skjerming.SkjermetDto
-import uk.org.webcompere.systemstubs.environment.EnvironmentVariables
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -161,47 +161,46 @@ private val strengtFortrolig = PersonopplysningerDto(adressebeskyttelse = "STREN
 private val strengtFortroligUtland = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG_UTLAND")
 private val enhet = PersonopplysningerDto(norgEnhetId = "4201")
 
-private fun testApp(test: suspend ApplicationTestBuilder.(mocks: Mocks) -> Unit) = Mocks().use { mocks ->
-    EnvironmentVariables(containerProperties(mocks)).execute {
+private fun testApp(test: suspend ApplicationTestBuilder.(mocks: MockEnvironment) -> Unit) =
+    MockEnvironment().use { mocks ->
         testApplication {
+            environment { config = mocks.environmentVariables }
             application {
-                personopplysninger(mocks.kafka)
+                server(mocks.kafka)
                 runBlocking { this@testApplication.test(mocks) }
             }
         }
     }
-}
 
-private class Mocks : AutoCloseable {
-    val pdl = pdlMock().apply { start() }
-    val oauth = oauthMock().apply { start() }
-    val norg = norgProxyMock().apply { start() }
+private class MockEnvironment : AutoCloseable {
+    private val fssProxy = embeddedServer(Netty, port = 0, module = Application::fssProxyMock).apply { start() }
+    private val pdlApi = embeddedServer(Netty, port = 0, module = Application::pdlApiMock).apply { start() }
+    private val oauth = embeddedServer(Netty, port = 0, module = Application::azureAdMock).apply { start() }
     val kafka = KafkaStreamsMock()
+
+    val environmentVariables = MapApplicationConfig(
+        "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${oauth.port}/token",
+        "AZURE_APP_CLIENT_ID" to "test",
+        "AZURE_APP_CLIENT_SECRET" to "test",
+        "PROXY_BASEURL" to "http://localhost:${fssProxy.port}",
+        "PDL_URL" to "http://localhost:${pdlApi.port}/graphql",
+        "PDL_SCOPE" to "test",
+        "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
+        "KAFKA_BROKERS" to "mock://kafka",
+        "KAFKA_TRUSTSTORE_PATH" to "",
+        "KAFKA_KEYSTORE_PATH" to "",
+        "KAFKA_CREDSTORE_PASSWORD" to "",
+        "KAFKA_CLIENT_ID" to "personopplysninger",
+    )
 
     companion object {
         val NettyApplicationEngine.port get() = runBlocking { resolvedConnectors() }.first { it.type == ConnectorType.HTTP }.port
     }
 
     override fun close() {
-        pdl.stop(100, 100)
-        oauth.stop(100, 100)
-        norg.stop(100, 100)
+        fssProxy.stop(0L, 0L)
+        pdlApi.stop(0L, 0L)
+        oauth.stop(0L, 0L)
         kafka.close()
     }
 }
-
-/** Mock the external properties used from within a nais pod */
-private fun containerProperties(mocks: Mocks) = mapOf(
-    "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${mocks.oauth.port}/token",
-    "AZURE_APP_CLIENT_ID" to "test",
-    "AZURE_APP_CLIENT_SECRET" to "test",
-    "PROXY_BASEURL" to "http://localhost:${mocks.norg.port}",
-    "PDL_URL" to "http://localhost:${mocks.pdl.port}/graphql",
-    "PDL_SCOPE" to "test",
-    "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
-    "KAFKA_BROKERS" to "mock://kafka",
-    "KAFKA_TRUSTSTORE_PATH" to "",
-    "KAFKA_KEYSTORE_PATH" to "",
-    "KAFKA_CREDSTORE_PASSWORD" to "",
-    "KAFKA_CLIENT_ID" to "personopplysninger",
-)

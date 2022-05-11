@@ -1,19 +1,16 @@
 package personopplysninger.mocks
 
-import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.intellij.lang.annotations.Language
 
-internal fun oauthMock() = embeddedServer(Netty, port = 0) {
-    install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
+internal fun Application.azureAdMock() {
+    install(ContentNegotiation) { jackson {} }
     routing {
         post("/token") {
             require(call.receiveText() == "client_id=test&client_secret=test&scope=test&grant_type=client_credentials")

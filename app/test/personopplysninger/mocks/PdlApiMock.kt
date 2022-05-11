@@ -1,11 +1,8 @@
 package personopplysninger.mocks
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.http.ContentType.Application
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -22,23 +19,22 @@ const val STRENGT_FORTROLIG_PERSON = "66666666666"
 const val STRENGT_FORTROLIG_UTLAND_PERSON = "77777777777"
 const val PERSON_UTEN_GRADERING = "88888888888"
 
-internal fun pdlMock() = embeddedServer(Netty, port = 0) {
-    install(ContentNegotiation) { jackson { enable(SerializationFeature.INDENT_OUTPUT) } }
+internal fun Application.pdlApiMock() {
+    install(ContentNegotiation) { jackson {} }
     routing {
         post("/graphql") {
             require(call.request.headers["Authorization"] == "Bearer very.secure.token") { "missing token" }
             require(call.request.headers["TEMA"] == "AAP") { "missing tema" }
-            val requested = call.receive<PdlRequest>()
-            when (requested.variables.ident) {
-                KOMMUNE_PERSON -> call.respondText(gtKommune, Application.Json)
-                BYDEL_PERSON -> call.respondText(gtBydel, Application.Json)
-                SVENSK_PERSON -> call.respondText(gtLand, Application.Json)
-                UGRADERT_PERSON -> call.respondText(ugradert, Application.Json)
-                FORTROLIG_PERSON -> call.respondText(fortrolig, Application.Json)
-                STRENGT_FORTROLIG_PERSON -> call.respondText(strengtFortrolig, Application.Json)
-                STRENGT_FORTROLIG_UTLAND_PERSON -> call.respondText(strengtFortroligUtland, Application.Json)
-                PERSON_UTEN_GRADERING -> call.respondText(ukjent, Application.Json)
-                else -> call.respondText(gtKommune, Application.Json)
+            when (call.receive<PdlRequest>().variables.ident) {
+                KOMMUNE_PERSON -> call.respondText(gtKommune, Json)
+                BYDEL_PERSON -> call.respondText(gtBydel, Json)
+                SVENSK_PERSON -> call.respondText(gtLand, Json)
+                UGRADERT_PERSON -> call.respondText(ugradert, Json)
+                FORTROLIG_PERSON -> call.respondText(fortrolig, Json)
+                STRENGT_FORTROLIG_PERSON -> call.respondText(strengtFortrolig, Json)
+                STRENGT_FORTROLIG_UTLAND_PERSON -> call.respondText(strengtFortroligUtland, Json)
+                PERSON_UTEN_GRADERING -> call.respondText(ukjent, Json)
+                else -> call.respondText(gtKommune, Json)
             }
         }
     }
