@@ -1,10 +1,11 @@
 name: Topics
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths:
-      - 'app/topic.yml'
+      - '.nais/topic.yml'
       - '.github/workflows/deploy-topic.yml'
 
 jobs:
