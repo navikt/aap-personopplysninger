@@ -12,7 +12,9 @@ dependencies {
     implementation("com.github.navikt.aap-libs:kafka:0.0.43")
     implementation("com.github.navikt.aap-libs:ktor-utils:0.0.43")
 
+    implementation("io.ktor:ktor-client-logging:2.0.1")
     implementation("io.ktor:ktor-client-core:2.0.1")
+
     implementation("io.ktor:ktor-server-content-negotiation:2.0.1")
     implementation("io.ktor:ktor-server-core:2.0.1")
     implementation("io.ktor:ktor-server-netty:2.0.1")

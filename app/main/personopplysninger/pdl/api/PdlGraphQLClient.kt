@@ -10,6 +10,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
@@ -25,12 +26,21 @@ internal data class PdlConfig(
 )
 
 private val log = LoggerFactory.getLogger(PdlGraphQLClient::class.java)
+private val secureLog = LoggerFactory.getLogger("secureLog")
 
 internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val azureConfig: AzureConfig) {
     private val httpClient = HttpClient(CIO) {
         install(HttpTimeout)
         install(HttpRequestRetry)
         install(Auth) { azureAD(azureConfig, pdlConfig.scope) }
+        install(Logging) {
+            level = LogLevel.ALL
+            logger = object : Logger {
+                override fun log(message: String) {
+                    secureLog.info(message)
+                }
+            }
+        }
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
