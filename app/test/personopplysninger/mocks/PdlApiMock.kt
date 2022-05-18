@@ -47,7 +47,8 @@ private const val gtKommune = """
     "hentGeografiskTilknytning": {
       "gtKommune": "0301",
       "gtBydel": null,
-      "gtLand": null
+      "gtLand": null,
+      "gtType": "KOMMUNE"
     },
     "hentPerson": {
       "adressebeskyttelse": []
@@ -64,7 +65,8 @@ private const val gtBydel = """
     "hentGeografiskTilknytning": {
       "gtKommune": null,
       "gtBydel": "030101",
-      "gtLand": null
+      "gtLand": null,
+      "gtType": "BYDEL"
     },
     "hentPerson": {
       "adressebeskyttelse": []
@@ -81,7 +83,8 @@ private const val gtLand = """
     "hentGeografiskTilknytning": {
       "gtKommune": null,
       "gtBydel": null,
-      "gtLand": "SWE"
+      "gtLand": "SWE",
+      "gtType": "UTLAND"
     },
     "hentPerson": {
       "adressebeskyttelse": []
@@ -98,7 +101,8 @@ private const val ugradert = """
         "hentGeografiskTilknytning": {
           "gtKommune": "0301",
           "gtBydel": null,
-          "gtLand": null
+          "gtLand": null,
+          "gtType": "KOMMUNE"
         },
         "hentPerson": {
           "adressebeskyttelse": [
@@ -119,7 +123,8 @@ private const val ukjent = """
         "hentGeografiskTilknytning": {
           "gtKommune": "0301",
           "gtBydel": null,
-          "gtLand": null
+          "gtLand": null,
+          "gtType": "KOMMUNE"
         },
         "hentPerson": {
           "adressebeskyttelse": []
@@ -137,7 +142,8 @@ private const val fortrolig = """
     "hentGeografiskTilknytning": {
       "gtKommune": "0301",
       "gtBydel": null,
-      "gtLand": null
+      "gtLand": null,
+      "gtType": "KOMMUNE"
     },
     "hentPerson": {
       "adressebeskyttelse": [
@@ -158,7 +164,8 @@ private const val strengtFortrolig = """
         "hentGeografiskTilknytning": {
           "gtKommune": "0301",
           "gtBydel": null,
-          "gtLand": null
+          "gtLand": null,
+          "gtType": "KOMMUNE"
         },
         "hentPerson": {
           "adressebeskyttelse": [
@@ -179,7 +186,8 @@ private const val strengtFortroligUtland = """
     "hentGeografiskTilknytning": {
       "gtKommune": "0301",
       "gtBydel": null,
-      "gtLand": null
+      "gtLand": null,
+      "gtType": "KOMMUNE"
     },
     "hentPerson": {
       "adressebeskyttelse": [

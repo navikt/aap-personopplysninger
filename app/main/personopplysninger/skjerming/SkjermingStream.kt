@@ -19,7 +19,7 @@ fun skjermingStream(skjermingTable: GlobalKTable<String, SkjermetDto>) = { chain
             }
         }
         .mapValues(Personopplysninger::toDto)
-        .produce(Topics.personopplysninger) { "produced-personopplysning-skjermet" }
+        .produce(Topics.personopplysninger,"produced-personopplysning-skjermet")
 }
 
 private val keyMapper: (String, Personopplysninger) -> String = { personident, _ -> personident }

@@ -1,11 +1,11 @@
 package personopplysninger.pdl.api
 
 internal data class PdlResponse(
-    val data: PdlData,
+    val data: PdlData?,
     val errors: List<PdlError>?,
 ) {
-    val adressebeskyttelse get() = data.hentPerson?.adressebeskyttelse?.singleOrNull()
-    val geografiskTilknytning get() = data.hentGeografiskTilknytning ?: error("skal ikke være null hvis requested")
+    val adressebeskyttelse get() = data?.hentPerson?.adressebeskyttelse?.singleOrNull()
+    val geografiskTilknytning get() = data?.hentGeografiskTilknytning ?: error("skal ikke være null hvis requested")
 }
 
 internal data class PdlData(
@@ -14,7 +14,7 @@ internal data class PdlData(
 ) {
     internal data class Person(val adressebeskyttelse: List<Adressebeskyttelse>)
     internal data class Adressebeskyttelse(val gradering: String)
-    internal data class GeografiskTilknytning(val gtLand: String?, val gtKommune: String?, val gtBydel: String?)
+    internal data class GeografiskTilknytning(val gtLand: String?, val gtKommune: String?, val gtBydel: String?, val gtType: String)
 }
 
 internal data class PdlError(

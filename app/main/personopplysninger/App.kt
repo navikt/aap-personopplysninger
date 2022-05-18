@@ -47,7 +47,7 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
 
     kafka.start(config.kafka, prometheus) {
         val personopplysninger = consume(Topics.personopplysninger)
-            .filterNotNull { "skip-personopplysning-tombstone" }
+            .filterNotNull("skip-personopplysning-tombstone")
             .mapValues(PersonopplysningerDto::restore)
 //        val personopplysningerTable = personopplysninger.produce(Tables.personopplysninger)
         val skjermingTable = globalTable(Tables.skjerming)

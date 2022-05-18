@@ -9,6 +9,7 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
@@ -34,7 +35,7 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
         install(HttpRequestRetry)
         install(Auth) { azureAD(azureConfig, pdlConfig.scope) }
         install(Logging) {
-            level = LogLevel.ALL
+            level = LogLevel.NONE
             logger = object : Logger {
                 override fun log(message: String) {
                     secureLog.info(message)
@@ -57,8 +58,8 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
             accept(ContentType.Application.Json)
             header("Nav-Call-Id", callId)
             header("TEMA", "AAP")
-//            contentType(ContentType.Application.Json)
-            setBody(objectMapper.writeValueAsString(query))
+            contentType(ContentType.Application.Json)
+            setBody(query)
         }
 
         return request
@@ -70,11 +71,4 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
     }
 
     private val callId: String get() = UUID.randomUUID().toString().also { log.info("calling pdl with call-id $it") }
-
-    companion object {
-        private val objectMapper = jacksonObjectMapper()
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .registerModule(JavaTimeModule())
-    }
 }

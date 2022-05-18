@@ -8,9 +8,9 @@ application {
 }
 
 dependencies {
-    implementation("com.github.navikt.aap-libs:ktor-client-auth:0.0.43")
-    implementation("com.github.navikt.aap-libs:kafka:0.0.43")
-    implementation("com.github.navikt.aap-libs:ktor-utils:0.0.43")
+    implementation("com.github.navikt.aap-libs:ktor-client-auth:0.1.3")
+    implementation("com.github.navikt.aap-libs:kafka:0.1.3")
+    implementation("com.github.navikt.aap-libs:ktor-utils:0.1.3")
 
     implementation("io.ktor:ktor-client-logging:2.0.1")
     implementation("io.ktor:ktor-client-core:2.0.1")
@@ -27,6 +27,6 @@ dependencies {
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
     testImplementation(kotlin("test"))
-    testImplementation("com.github.navikt.aap-libs:kafka-test:0.0.43")
+    testImplementation("com.github.navikt.aap-libs:kafka-test:0.1.3")
     testImplementation("io.ktor:ktor-server-test-host:2.0.1")
 }

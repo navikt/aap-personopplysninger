@@ -4,9 +4,20 @@ internal data class PdlRequest(val query: String, val variables: Variables) {
     data class Variables(val ident: String)
 
     companion object {
-        fun hentAlt(personident: String) = PdlRequest(alt, Variables(personident))
-        fun hentGeografiskTilknytning(personident: String) = PdlRequest(geografiskTilknytning, Variables(personident))
-        fun hentAdressebeskyttelse(personident: String) = PdlRequest(adressebeskyttelse, Variables(personident))
+        fun hentAlt(personident: String) = PdlRequest(
+            query = alt.replace("\n", ""),
+            variables = Variables(personident),
+        )
+
+        fun hentGeografiskTilknytning(personident: String) = PdlRequest(
+            query = geografiskTilknytning.replace("\n", ""),
+            variables = Variables(personident),
+        )
+
+        fun hentAdressebeskyttelse(personident: String) = PdlRequest(
+            query = adressebeskyttelse.replace("\n", ""),
+            variables = Variables(personident),
+        )
     }
 }
 
@@ -15,6 +26,7 @@ private const val ident = "\$ident" // workaround to escape $ in multiline strin
 private const val alt = """
     query($ident: ID!) {
         hentGeografiskTilknytning(ident: $ident) {
+            gtType
             gtKommune
             gtBydel
             gtLand

@@ -13,6 +13,7 @@ class Personopplysninger private constructor(
     fun settTilhørendeBydel(bydel: String) = let { if (gt == null) gt = bydel }
     fun settTilhørendeKommune(kommune: String) = let { if (gt == null) gt = kommune }
     fun settTilhørendeLand(land: String) = let { if (gt == null) gt = land }
+    fun settTilhørendeUdefinert() = let { if(gt == null) gt = "UDEFINERT" }
     fun settAdressebeskyttelse(gradering: String?) = let {
         if (adresseeskyttelse == null) adresseeskyttelse = gradering ?: "UGRADERT"
     }

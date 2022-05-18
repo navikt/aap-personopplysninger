@@ -10,7 +10,7 @@ internal fun norgStream(norgClient: NorgProxyClient) = { chain: KStream<String, 
     chain
         .mapValues { personopplysninger -> settEnhet(personopplysninger, norgClient) }
         .mapValues(Personopplysninger::toDto)
-        .produce(Topics.personopplysninger) { "produce-personopplysning-enhet" }
+        .produce(Topics.personopplysninger, "produce-personopplysning-enhet")
 }
 
 private fun settEnhet(person: Personopplysninger, norgClient: NorgProxyClient): Personopplysninger = person.apply {
