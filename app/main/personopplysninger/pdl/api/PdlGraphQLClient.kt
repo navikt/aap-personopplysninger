@@ -1,7 +1,9 @@
 package personopplysninger.pdl.api
 
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -40,18 +42,29 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
     suspend fun hentAlt(personident: String) = query(PdlRequest.hentAlt(personident))
     suspend fun hentAdressebeskyttelse(personident: String) = query(PdlRequest.hentAdressebeskyttelse(personident))
 
-    private suspend fun query(query: PdlRequest): PdlResponse =
-        httpClient.post(pdlConfig.url.toURL()) {
+    private suspend fun query(query: PdlRequest): PdlResponse {
+        val request = httpClient.post(pdlConfig.url.toURL()) {
             accept(ContentType.Application.Json)
             header("Nav-Call-Id", callId)
             header("TEMA", "AAP")
-            contentType(ContentType.Application.Json)
-            setBody(query)
-        }.body<PdlResponse>()
+//            contentType(ContentType.Application.Json)
+            setBody(objectMapper.writeValueAsString(query))
+        }
+
+        return request
+            .body<PdlResponse>()
             .also { response ->
                 // graphql valideringsfeil
                 if (response.errors != null) error("Feil fra PDL, ${response.errors}")
             }
+    }
 
     private val callId: String get() = UUID.randomUUID().toString().also { log.info("calling pdl with call-id $it") }
+
+    companion object {
+        private val objectMapper = jacksonObjectMapper()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .registerModule(JavaTimeModule())
+    }
 }

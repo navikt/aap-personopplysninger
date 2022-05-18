@@ -8,7 +8,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.intellij.lang.annotations.Language
-import personopplysninger.pdl.api.PdlRequest
 
 const val KOMMUNE_PERSON = "11111111111"
 const val BYDEL_PERSON = "22222222222"
@@ -25,15 +24,16 @@ internal fun Application.pdlApiMock() {
         post("/graphql") {
             require(call.request.headers["Authorization"] == "Bearer very.secure.token") { "missing token" }
             require(call.request.headers["TEMA"] == "AAP") { "missing tema" }
-            when (call.receive<PdlRequest>().variables.ident) {
-                KOMMUNE_PERSON -> call.respondText(gtKommune, Json)
-                BYDEL_PERSON -> call.respondText(gtBydel, Json)
-                SVENSK_PERSON -> call.respondText(gtLand, Json)
-                UGRADERT_PERSON -> call.respondText(ugradert, Json)
-                FORTROLIG_PERSON -> call.respondText(fortrolig, Json)
-                STRENGT_FORTROLIG_PERSON -> call.respondText(strengtFortrolig, Json)
-                STRENGT_FORTROLIG_UTLAND_PERSON -> call.respondText(strengtFortroligUtland, Json)
-                PERSON_UTEN_GRADERING -> call.respondText(ukjent, Json)
+            val response = call.receiveText()
+            when {
+                response.contains(KOMMUNE_PERSON) -> call.respondText(gtKommune, Json)
+                response.contains(BYDEL_PERSON) -> call.respondText(gtBydel, Json)
+                response.contains(SVENSK_PERSON) -> call.respondText(gtLand, Json)
+                response.contains(UGRADERT_PERSON) -> call.respondText(ugradert, Json)
+                response.contains(FORTROLIG_PERSON) -> call.respondText(fortrolig, Json)
+                response.contains(STRENGT_FORTROLIG_PERSON) -> call.respondText(strengtFortrolig, Json)
+                response.contains(STRENGT_FORTROLIG_UTLAND_PERSON) -> call.respondText(strengtFortroligUtland, Json)
+                response.contains(PERSON_UTEN_GRADERING) -> call.respondText(ukjent, Json)
                 else -> call.respondText(gtKommune, Json)
             }
         }
