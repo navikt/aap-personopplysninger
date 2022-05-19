@@ -17,7 +17,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: norg2.dev-fss-pub.nais.io
+        - host: {{norg.acl}}
   azure:
     application:
       enabled: true
@@ -51,5 +51,5 @@ spec:
       value: {{pdl.url}}
     - name: PDL_SCOPE
       value: {{pdl.scope}}
-    - name: PROXY_BASEURL
-      value: {{proxy.base-url}}
+    - name: NORG_URL
+      value: {{norg.url}}

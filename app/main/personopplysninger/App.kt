@@ -12,7 +12,7 @@ import no.nav.aap.kafka.streams.*
 import no.nav.aap.ktor.config.loadConfig
 import org.apache.kafka.streams.kstream.Branched
 import personopplysninger.Personopplysninger.PersonopplysningerDto
-import personopplysninger.norg.NorgProxyClient
+import personopplysninger.norg.NorgClient
 import personopplysninger.norg.norgStream
 import personopplysninger.pdl.api.PdlGraphQLClient
 import personopplysninger.pdl.streams.leesahStream
@@ -43,7 +43,7 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
     install(MicrometerMetrics) { registry = prometheus }
 
     val pdlClient = PdlGraphQLClient(config.pdl, config.azure)
-    val norgClient = NorgProxyClient(config.proxy)
+    val norgClient = NorgClient(config.norg)
 
     kafka.start(config.kafka, prometheus) {
         val personopplysninger = consume(Topics.personopplysninger)

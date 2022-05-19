@@ -8,14 +8,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.intellij.lang.annotations.Language
 
-internal fun Application.fssProxyMock() {
+internal fun Application.norgMock() {
     install(ContentNegotiation) { jackson {} }
     routing {
-        post("/api/v1/arbeidsfordeling/enheter/bestmatch") {
+        post("/norg2/api/v1/arbeidsfordeling/enheter/bestmatch") {
             call.respondText(lokalkontor, ContentType.Application.Json)
         }
     }
 }
 
 @Language("JSON")
-private const val lokalkontor = """{ "enhetNr" : "4201"}"""
+private const val lokalkontor = """[{ "enhetNr" : "4201"}]"""

@@ -173,8 +173,8 @@ private fun testApp(test: suspend ApplicationTestBuilder.(mocks: MockEnvironment
     }
 
 private class MockEnvironment : AutoCloseable {
-    private val fssProxy = embeddedServer(Netty, port = 0, module = Application::fssProxyMock).apply { start() }
-    private val pdlApi = embeddedServer(Netty, port = 0, module = Application::pdlApiMock).apply { start() }
+    private val norg = embeddedServer(Netty, port = 0, module = Application::norgMock).apply { start() }
+    private val pdl = embeddedServer(Netty, port = 0, module = Application::pdlApiMock).apply { start() }
     private val oauth = embeddedServer(Netty, port = 0, module = Application::azureAdMock).apply { start() }
     val kafka = KafkaStreamsMock()
 
@@ -182,8 +182,8 @@ private class MockEnvironment : AutoCloseable {
         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${oauth.port}/token",
         "AZURE_APP_CLIENT_ID" to "test",
         "AZURE_APP_CLIENT_SECRET" to "test",
-        "PROXY_BASEURL" to "http://localhost:${fssProxy.port}",
-        "PDL_URL" to "http://localhost:${pdlApi.port}/graphql",
+        "NORG_URL" to "http://localhost:${norg.port}/norg2",
+        "PDL_URL" to "http://localhost:${pdl.port}/graphql",
         "PDL_SCOPE" to "test",
         "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
         "KAFKA_BROKERS" to "mock://kafka",
@@ -198,8 +198,8 @@ private class MockEnvironment : AutoCloseable {
     }
 
     override fun close() {
-        fssProxy.stop(0L, 0L)
-        pdlApi.stop(0L, 0L)
+        norg.stop(0L, 0L)
+        pdl.stop(0L, 0L)
         oauth.stop(0L, 0L)
         kafka.close()
     }

@@ -20,7 +20,7 @@ internal class IntegrationTest {
         val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)
         val personopplysningerOutput = mocks.kafka.outputTopic(Topics.personopplysninger)
 
-        val ident = "12345678910"
+        val ident = ""
         skjermingInput.pipeInput(ident, SkjermetDto(LocalDateTime.now().minusDays(30), null))
         personopplysningerInput.pipeInput(ident, PersonopplysningerDto())
 
@@ -52,9 +52,10 @@ internal class IntegrationTest {
             "AZURE_APP_CLIENT_ID" to "",
             "AZURE_APP_CLIENT_SECRET" to "",
 
-            "PROXY_BASEURL" to "https://norg2.dev-fss-pub.nais.io",
+            "NORG_URL" to "https://norg2.dev-fss-pub.nais.io/norg2",
             "PDL_URL" to "https://pdl-api.dev.intern.nav.no/graphql",
             "PDL_SCOPE" to "api://dev-fss.pdl.pdl-api/.default",
+
             "KAFKA_STREAMS_APPLICATION_ID" to "personopplysninger",
             "KAFKA_BROKERS" to "mock://kafka",
             "KAFKA_TRUSTSTORE_PATH" to "",

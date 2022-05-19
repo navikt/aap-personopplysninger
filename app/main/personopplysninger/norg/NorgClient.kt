@@ -14,12 +14,11 @@ import io.ktor.serialization.jackson.*
 import org.slf4j.LoggerFactory
 import java.net.URL
 
-internal data class ProxyConfig(val baseUrl: URL)
+internal data class NorgConfig(val url: URL)
 
 private val secureLog = LoggerFactory.getLogger("secureLog")
-private val log = LoggerFactory.getLogger(NorgProxyClient::class.java)
 
-internal class NorgProxyClient(private val config: ProxyConfig) {
+internal class NorgClient(private val config: NorgConfig) {
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson {
@@ -30,9 +29,7 @@ internal class NorgProxyClient(private val config: ProxyConfig) {
         install(Logging) {
             level = LogLevel.ALL
             logger = object : Logger {
-                override fun log(message: String) {
-                    log.info(message) // fixme: secureLog instead
-                }
+                override fun log(message: String) = secureLog.info(message) // fixme: trace?
             }
         }
         install(HttpTimeout)
@@ -40,9 +37,9 @@ internal class NorgProxyClient(private val config: ProxyConfig) {
     }
 
     suspend fun hentArbeidsfordeling(request: ArbeidsfordelingRequest) =
-        httpClient.post("${config.baseUrl}/api/v1/arbeidsfordeling/enheter/bestmatch") {
+        httpClient.post("${config.url}/api/v1/arbeidsfordeling/enheter/bestmatch") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body<ArbeidsfordelingResponse>()
+        }.body<List<ArbeidsfordelingResponse>>()
 }
