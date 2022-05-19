@@ -27,9 +27,9 @@ internal class NorgClient(private val config: NorgConfig) {
             }
         }
         install(Logging) {
-            level = LogLevel.ALL
+            level = LogLevel.BODY
             logger = object : Logger {
-                override fun log(message: String) = secureLog.info(message) // fixme: trace?
+                override fun log(message: String) = secureLog.info(message)
             }
         }
         install(HttpTimeout)

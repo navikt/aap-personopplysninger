@@ -10,13 +10,8 @@ class Personopplysninger private constructor(
 ) {
     fun settEnhet(enhetId: String) = let { if (norgEnhetId == null) norgEnhetId = enhetId }
     fun settSkjerming(fom: LocalDate?, tom: LocalDate?) = let { if (skjerming == null) skjerming = Skjerming(fom, tom) }
-    fun settTilhørendeBydel(bydel: String) = let { if (gt == null) gt = bydel }
-    fun settTilhørendeKommune(kommune: String) = let { if (gt == null) gt = kommune }
-    fun settTilhørendeLand(land: String) = let { if (gt == null) gt = land }
-    fun settTilhørendeUdefinert() = let { if(gt == null) gt = "UDEFINERT" }
-    fun settAdressebeskyttelse(gradering: String?) = let {
-        if (adresseeskyttelse == null) adresseeskyttelse = gradering ?: "UGRADERT"
-    }
+    fun settGeografiskTilknytning(gt: String) = let { if (this.gt == null) this.gt = gt }
+    fun settAdressebeskyttelse(gradering: String) = let { if (adresseeskyttelse == null) adresseeskyttelse = gradering }
 
     fun kanSetteEnhet() = norgEnhetId == null && listOf(adresseeskyttelse, gt, skjerming).all { it != null }
     fun kanSetteAdressebeskyttelse() = adresseeskyttelse == null

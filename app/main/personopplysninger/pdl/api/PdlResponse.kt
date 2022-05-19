@@ -5,7 +5,6 @@ internal data class PdlResponse(
     val errors: List<PdlError>?,
 ) {
     val adressebeskyttelse get() = data?.hentPerson?.adressebeskyttelse?.singleOrNull()
-    val geografiskTilknytning get() = data?.hentGeografiskTilknytning ?: error("skal ikke være null hvis requested")
 }
 
 internal data class PdlData(

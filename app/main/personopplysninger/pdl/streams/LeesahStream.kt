@@ -22,7 +22,7 @@ private fun isAdressebeskyttelse(personident: String, hendelse: GenericRecord): 
 }
 
 private fun toAddressebeskyttelse(person: GenericRecord) = Personopplysninger.opprettForOppdatering().apply {
-    settAdressebeskyttelse(person.gradering)
+    settAdressebeskyttelse(person.gradering ?: "UGRADERT")
 }
 
 private object Opplysningstype {

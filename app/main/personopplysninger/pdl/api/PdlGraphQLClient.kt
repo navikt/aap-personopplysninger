@@ -35,11 +35,9 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
         install(HttpRequestRetry)
         install(Auth) { azureAD(azureConfig, pdlConfig.scope) }
         install(Logging) {
-            level = LogLevel.NONE
+            level = LogLevel.BODY
             logger = object : Logger {
-                override fun log(message: String) {
-                    secureLog.info(message)
-                }
+                override fun log(message: String) = secureLog.info(message)
             }
         }
         install(ContentNegotiation) {
