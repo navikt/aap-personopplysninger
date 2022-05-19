@@ -6,4 +6,4 @@ kafka:
   pool: nav-dev
 
 proxy:
-  base-url: https://aap-fss-proxy.dev-fss-pub.nais.io
+  base-url: https://norg2.dev-fss-pub.nais.io

@@ -14,6 +14,10 @@ spec:
     disableAutoScaling: true
     max: 1
     min: 1
+  accessPolicy:
+    outbound:
+      external:
+        - host: norg2.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true

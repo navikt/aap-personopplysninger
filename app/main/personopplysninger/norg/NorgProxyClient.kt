@@ -12,7 +12,6 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import org.slf4j.LoggerFactory
-import personopplysninger.pdl.api.PdlGraphQLClient
 import java.net.URL
 
 internal data class ProxyConfig(val baseUrl: URL)
@@ -41,7 +40,7 @@ internal class NorgProxyClient(private val config: ProxyConfig) {
     }
 
     suspend fun hentArbeidsfordeling(request: ArbeidsfordelingRequest) =
-        httpClient.post("${config.baseUrl}/norg/arbeidsfordeling") {
+        httpClient.post("${config.baseUrl}/api/v1/arbeidsfordeling/enheter/bestmatch") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
             setBody(request)

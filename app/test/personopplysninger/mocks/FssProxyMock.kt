@@ -11,7 +11,7 @@ import org.intellij.lang.annotations.Language
 internal fun Application.fssProxyMock() {
     install(ContentNegotiation) { jackson {} }
     routing {
-        post("/norg/arbeidsfordeling") {
+        post("/api/v1/arbeidsfordeling/enheter/bestmatch") {
             call.respondText(lokalkontor, ContentType.Application.Json)
         }
     }
