@@ -15,6 +15,6 @@ internal fun norgStream(norgClient: NorgClient) = { chain: KStream<String, Perso
 
 private fun settEnhet(person: Personopplysninger, norgClient: NorgClient): Personopplysninger = person.apply {
     val request = Arbeidsfordeling.createRequest(person.toDto())
-    val response = runBlocking { norgClient.hentArbeidsfordeling(request) }.single() // best match skal bare ha 1
-    settEnhet(response.enhetNr)
+    val response = runBlocking { norgClient.hentArbeidsfordeling(request) }.singleOrNull()
+    settEnhet(response?.enhetNr ?: "UKJENT")
 }
