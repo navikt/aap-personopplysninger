@@ -6,7 +6,7 @@ metadata:
   labels:
     team: aap
   annotations:
-    kafka.nais.io/removeDataWhenResourceIsDeleted: "true"
+    kafka.nais.io/removeDataWhenResourceIsDeleted: {{kafka.permanent-delete-topics}}
     githubUrl: "https://github.com/navikt/aap-personopplysninger"
     format: json
 spec:
