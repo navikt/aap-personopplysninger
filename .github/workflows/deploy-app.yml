@@ -3,7 +3,9 @@ name: App
 on:
   push:
     branches: [ main ]
-    p
+    paths-ignore:
+      - '.nais/topic-personopplysninger.yml'
+      - '.github/workflows/deploy-topic.yml'
 
 env:
   IMAGE: ghcr.io/navikt/${{ github.repository }}:${{ github.sha }}
