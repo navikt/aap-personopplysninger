@@ -6,7 +6,7 @@ metadata:
   labels:
     team: aap
   annotations:
-    githubUrl: "https://github.com/navikt/aap-personopplysninger"
+    github.url: "https://github.com/navikt/aap-personopplysninger"
 spec:
   image: {{image}}
   replicas:
