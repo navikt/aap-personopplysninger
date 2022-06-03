@@ -1,9 +1,7 @@
 package personopplysninger.mocks
 
 import io.ktor.http.ContentType.Application.Json
-import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -18,24 +16,21 @@ const val STRENGT_FORTROLIG_PERSON = "66666666666"
 const val STRENGT_FORTROLIG_UTLAND_PERSON = "77777777777"
 const val PERSON_UTEN_GRADERING = "88888888888"
 
-internal fun Application.pdlApiMock() {
-    install(ContentNegotiation) { jackson {} }
-    routing {
-        post("/graphql") {
-            require(call.request.headers["Authorization"] == "Bearer very.secure.token") { "missing token" }
-            require(call.request.headers["TEMA"] == "AAP") { "missing tema" }
-            val response = call.receiveText()
-            when {
-                response.contains(KOMMUNE_PERSON) -> call.respondText(gtKommune, Json)
-                response.contains(BYDEL_PERSON) -> call.respondText(gtBydel, Json)
-                response.contains(SVENSK_PERSON) -> call.respondText(gtLand, Json)
-                response.contains(UGRADERT_PERSON) -> call.respondText(ugradert, Json)
-                response.contains(FORTROLIG_PERSON) -> call.respondText(fortrolig, Json)
-                response.contains(STRENGT_FORTROLIG_PERSON) -> call.respondText(strengtFortrolig, Json)
-                response.contains(STRENGT_FORTROLIG_UTLAND_PERSON) -> call.respondText(strengtFortroligUtland, Json)
-                response.contains(PERSON_UTEN_GRADERING) -> call.respondText(ukjent, Json)
-                else -> call.respondText(gtKommune, Json)
-            }
+internal fun Application.pdlApiMock() = routing {
+    post("/graphql") {
+        require(call.request.headers["Authorization"] == "Bearer very.secure.token") { "missing token" }
+        require(call.request.headers["TEMA"] == "AAP") { "missing tema" }
+        val response = call.receiveText()
+        when {
+            response.contains(KOMMUNE_PERSON) -> call.respondText(gtKommune, Json)
+            response.contains(BYDEL_PERSON) -> call.respondText(gtBydel, Json)
+            response.contains(SVENSK_PERSON) -> call.respondText(gtLand, Json)
+            response.contains(UGRADERT_PERSON) -> call.respondText(ugradert, Json)
+            response.contains(FORTROLIG_PERSON) -> call.respondText(fortrolig, Json)
+            response.contains(STRENGT_FORTROLIG_PERSON) -> call.respondText(strengtFortrolig, Json)
+            response.contains(STRENGT_FORTROLIG_UTLAND_PERSON) -> call.respondText(strengtFortroligUtland, Json)
+            response.contains(PERSON_UTEN_GRADERING) -> call.respondText(ukjent, Json)
+            else -> call.respondText(gtKommune, Json)
         }
     }
 }
