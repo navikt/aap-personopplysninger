@@ -4,7 +4,7 @@ pdl:
 
 kafka:
   pool: nav-dev
-  permanent-delete-topics: "true"
+  permanent-delete-topics: true
 
 norg:
   url: https://norg2.dev-fss-pub.nais.io/norg2

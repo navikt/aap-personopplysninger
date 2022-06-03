@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths-ignore:
-      - '.nais/topic-personopplysninger.yml'
+      - '.nais/topic-*.yml'
       - '.github/workflows/deploy-topic.yml'
 
 env:
