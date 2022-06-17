@@ -21,8 +21,8 @@ data class ArbeidsfordelingRequest(
     val geografiskOmraade: String,
     val skjermet: Boolean,
     val diskresjonskode: String,
-    private val tema: String = "AAP",
-    private val behandlingstema: String = Behandlingstema.ARBEIDSAVKLARINGSPENGER,
+    val tema: String = "AAP",
+    val behandlingstema: String = Behandlingstema.ARBEIDSAVKLARINGSPENGER,
 )
 
 private object Behandlingstema {
