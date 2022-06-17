@@ -10,6 +10,7 @@ import io.micrometer.prometheus.PrometheusMeterRegistry
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.*
 import no.nav.aap.ktor.config.loadConfig
+import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.Branched
 import personopplysninger.Personopplysninger.PersonopplysningerDto
 import personopplysninger.norg.NorgClient
@@ -45,7 +46,7 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
     val pdlClient = PdlGraphQLClient(config.pdl, config.azure)
     val norgClient = NorgClient(config.norg)
 
-    kafka.start(config.kafka, prometheus) {
+    kafka.connect(config.kafka, prometheus, StreamsBuilder().apply {
         val personopplysninger = consume(Topics.personopplysninger)
             .filterNotNull("skip-personopplysning-tombstone")
             .mapValues(PersonopplysningerDto::restore)
@@ -60,7 +61,7 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
         // update streams
         leesahStream()
 //        GeografiskTilknytningStream(this)
-    }
+    }.build())
 
     routing {
         actuators(prometheus, kafka)
