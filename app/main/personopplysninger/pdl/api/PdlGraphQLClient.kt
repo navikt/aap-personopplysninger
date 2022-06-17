@@ -64,7 +64,7 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
             .body<PdlResponse>()
             .also { response ->
                 // graphql valideringsfeil
-                if (response.errors != null) error("Feil fra PDL, ${response.errors}")
+                //if (response.errors != null) error("Feil fra PDL, ${response.errors}")
             }
     }
 
