@@ -1,22 +1,18 @@
 package personopplysninger.pdl.api
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.aap.ktor.client.AzureConfig
-import no.nav.aap.ktor.client.HttpClientAzureAdInterceptor.Companion.azureAD
+import no.nav.aap.ktor.client.HttpClientAzureAdTokenProvider
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.*
@@ -29,11 +25,11 @@ internal data class PdlConfig(
 private val log = LoggerFactory.getLogger(PdlGraphQLClient::class.java)
 private val secureLog = LoggerFactory.getLogger("secureLog")
 
-internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val azureConfig: AzureConfig) {
+internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, azureConfig: AzureConfig) {
+    private val tokenProvider = HttpClientAzureAdTokenProvider(azureConfig, pdlConfig.scope)
     private val httpClient = HttpClient(CIO) {
         install(HttpTimeout)
         install(HttpRequestRetry)
-        install(Auth) { azureAD(azureConfig, pdlConfig.scope) }
         install(Logging) {
             level = LogLevel.BODY
             logger = object : Logger {
@@ -52,10 +48,12 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, private val az
     suspend fun hentAdressebeskyttelse(personident: String) = query(PdlRequest.hentAdressebeskyttelse(personident))
 
     private suspend fun query(query: PdlRequest): PdlResponse {
+        val token = tokenProvider.getToken()
         val request = httpClient.post(pdlConfig.url.toURL()) {
             accept(ContentType.Application.Json)
             header("Nav-Call-Id", callId)
             header("TEMA", "AAP")
+            bearerAuth(token)
             contentType(ContentType.Application.Json)
             setBody(query)
         }

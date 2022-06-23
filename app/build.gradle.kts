@@ -8,9 +8,9 @@ application {
 }
 
 dependencies {
-    implementation("com.github.navikt.aap-libs:ktor-client-auth:2.0.5")
-    implementation("com.github.navikt.aap-libs:kafka:2.0.5")
-    implementation("com.github.navikt.aap-libs:ktor-utils:2.0.5")
+    implementation("com.github.navikt.aap-libs:ktor-client-auth:2.0.10")
+    implementation("com.github.navikt.aap-libs:kafka:2.0.10")
+    implementation("com.github.navikt.aap-libs:ktor-utils:2.0.10")
 
     implementation("io.ktor:ktor-client-logging:2.0.2")
     implementation("io.ktor:ktor-client-core:2.0.2")
