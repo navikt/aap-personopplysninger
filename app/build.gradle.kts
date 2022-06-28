@@ -18,7 +18,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
     implementation("io.ktor:ktor-server-core:2.0.2")
     implementation("io.ktor:ktor-server-netty:2.0.2")
-    implementation("io.ktor:ktor-server-metrics-micrometer:2.0.2")
+    implementation("io.ktor:ktor-server-metrics-micrometer:2.0.3")
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.9.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
