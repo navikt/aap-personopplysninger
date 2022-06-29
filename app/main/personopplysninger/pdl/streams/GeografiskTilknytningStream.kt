@@ -1,6 +1,5 @@
 package personopplysninger.pdl.streams
 
-import no.nav.aap.kafka.streams.consume
 import org.apache.kafka.streams.StreamsBuilder
 import personopplysninger.Topics
 //

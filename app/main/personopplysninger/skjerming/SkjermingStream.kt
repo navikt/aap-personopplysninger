@@ -1,10 +1,10 @@
 package personopplysninger.skjerming
 
-import personopplysninger.Personopplysninger
-import no.nav.aap.kafka.streams.leftJoin
-import no.nav.aap.kafka.streams.produce
+import no.nav.aap.kafka.streams.extension.leftJoin
+import no.nav.aap.kafka.streams.extension.produce
 import org.apache.kafka.streams.kstream.GlobalKTable
 import org.apache.kafka.streams.kstream.KStream
+import personopplysninger.Personopplysninger
 import personopplysninger.Topics
 
 fun skjermingStream(skjermingTable: GlobalKTable<String, SkjermetDto>) = { chain: KStream<String, Personopplysninger> ->
@@ -19,7 +19,7 @@ fun skjermingStream(skjermingTable: GlobalKTable<String, SkjermetDto>) = { chain
             }
         }
         .mapValues(Personopplysninger::toDto)
-        .produce(Topics.personopplysninger,"produced-personopplysning-skjermet")
+        .produce(Topics.personopplysninger, "produced-personopplysning-skjermet")
 }
 
 private val keyMapper: (String, Personopplysninger) -> String = { personident, _ -> personident }

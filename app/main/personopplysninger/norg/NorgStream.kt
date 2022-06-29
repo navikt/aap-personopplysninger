@@ -1,9 +1,9 @@
 package personopplysninger.norg
 
 import kotlinx.coroutines.runBlocking
-import personopplysninger.Personopplysninger
-import no.nav.aap.kafka.streams.produce
+import no.nav.aap.kafka.streams.extension.produce
 import org.apache.kafka.streams.kstream.KStream
+import personopplysninger.Personopplysninger
 import personopplysninger.Topics
 
 internal fun norgStream(norgClient: NorgClient) = { chain: KStream<String, Personopplysninger> ->

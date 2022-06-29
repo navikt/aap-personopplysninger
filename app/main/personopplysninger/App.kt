@@ -8,7 +8,11 @@ import io.ktor.server.routing.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import no.nav.aap.kafka.serde.json.JsonSerde
-import no.nav.aap.kafka.streams.*
+import no.nav.aap.kafka.streams.KStreams
+import no.nav.aap.kafka.streams.KafkaStreams
+import no.nav.aap.kafka.streams.Table
+import no.nav.aap.kafka.streams.Topic
+import no.nav.aap.kafka.streams.extension.*
 import no.nav.aap.ktor.config.loadConfig
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.Branched

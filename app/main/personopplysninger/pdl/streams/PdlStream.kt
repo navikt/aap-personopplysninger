@@ -1,8 +1,8 @@
 package personopplysninger.pdl.streams
 
 import kotlinx.coroutines.runBlocking
-import no.nav.aap.kafka.streams.filterNotNull
-import no.nav.aap.kafka.streams.produce
+import no.nav.aap.kafka.streams.extension.filterNotNull
+import no.nav.aap.kafka.streams.extension.produce
 import org.apache.kafka.streams.kstream.KStream
 import org.slf4j.LoggerFactory
 import personopplysninger.Personopplysninger
