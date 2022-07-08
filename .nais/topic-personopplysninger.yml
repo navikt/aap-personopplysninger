@@ -24,6 +24,8 @@ spec:
       application: oppgavestyring
       access: readwrite
 
-    - team: aap
-      application: aap-kafka-manager
-      access: read
+  {{#each kafka.acl.dev as |dev|}}
+    - team: "{{dev.team}}"
+      application: "{{dev.application}}"
+      access: "{{dev.access}}"
+  {{/each}}

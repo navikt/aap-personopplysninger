@@ -5,8 +5,9 @@ on:
   push:
     branches: [ main ]
     paths:
-      - '.nais/topic-personopplysninger.yml'
-      - '.github/workflows/deploy-topic.yml'
+      - '.nais/topic-*.yml'
+      - '.github/workflows/deploy-topics.yml'
+      - '.nais/dev.yml'
 
 jobs:
   personopplysningerV1:
