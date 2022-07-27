@@ -27,6 +27,6 @@ dependencies {
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("com.github.navikt.aap-libs:kafka-test:2.1.3")
+    testImplementation("com.github.navikt.aap-libs:kafka-test:3.0.0")
     testImplementation("io.ktor:ktor-server-test-host:2.0.2")
 }
