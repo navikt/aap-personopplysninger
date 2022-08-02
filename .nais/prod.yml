@@ -1,0 +1,13 @@
+pdl:
+  url: https://pdl-api.fss-pub.nais.io/graphql
+  scope: api://fss.pdl.pdl-api/.default
+
+kafka:
+  pool: nav-prod
+  permanent-delete-topics: false
+  acl:
+    dev: []
+
+norg:
+  url: https://norg2.fss-pub.nais.io/norg2
+  acl: norg2.fss-pub.nais.io

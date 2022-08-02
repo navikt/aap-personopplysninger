@@ -1,25 +1,38 @@
-name: Topics
+name: Deploy Topics
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
     paths:
       - '.nais/topic-*.yml'
       - '.github/workflows/deploy-topics.yml'
       - '.nais/dev.yml'
+      - '.nais/prod.yml'
 
 jobs:
-  personopplysningerV1:
-    name: aap.personopplysninger.v1
+  deploy:
+    strategy:
+      matrix:
+        name:
+          - topic-personopplysninger.yml
+        cluster:
+          - dev-gcp
+          - prod-gcp
+        include:
+          - cluster: dev-gcp
+            vars: dev.yml
+          - cluster: prod-gcp
+            vars: prod.yml
+    name: Deploy ${{ matrix.name }} to ${{ matrix.cluster }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Deploy to dev
+      - name: Deploy ${{ matrix.name }} to ${{ matrix.cluster }}
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: .nais/topic-personopplysninger.yml
-          VARS: .nais/dev.yml
+          CLUSTER: ${{ matrix.cluster }}
+          RESOURCE: .nais/${{ matrix.name }}
+          VARS: .nais/${{ matrix.vars }}
           PRINT_PAYLOAD: true
