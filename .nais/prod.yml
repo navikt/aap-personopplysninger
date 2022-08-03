@@ -1,6 +1,6 @@
 pdl:
-  url: https://pdl-api.fss-pub.nais.io/graphql
-  scope: api://fss.pdl.pdl-api/.default
+  url: https://pdl-api.prod-fss-pub.nais.io/graphql
+  scope: api://prod-fss.pdl.pdl-api/.default
 
 kafka:
   pool: nav-prod
@@ -9,5 +9,5 @@ kafka:
     dev: []
 
 norg:
-  url: https://norg2.fss-pub.nais.io/norg2
-  acl: norg2.fss-pub.nais.io
+  url: https://norg2.prod-fss-pub.nais.io/norg2
+  acl: norg2.prod-fss-pub.nais.io
