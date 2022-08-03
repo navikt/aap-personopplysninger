@@ -7,18 +7,22 @@ application {
     mainClass.set("personopplysninger.AppKt")
 }
 
+val aapLibsVersion = "3.1.5"
+val ktorVersion = "2.0.3"
+
 dependencies {
-    implementation("com.github.navikt.aap-libs:ktor-client-auth:2.1.3")
-    implementation("com.github.navikt.aap-libs:kafka:2.1.3")
-    implementation("com.github.navikt.aap-libs:ktor-utils:2.1.3")
+    implementation("com.github.navikt.aap-libs:ktor-client-auth:$aapLibsVersion")
+    implementation("com.github.navikt.aap-libs:kafka:$aapLibsVersion")
+    implementation("com.github.navikt.aap-libs:kafka-avroserde:$aapLibsVersion")
+    implementation("com.github.navikt.aap-libs:ktor-utils:$aapLibsVersion")
 
-    implementation("io.ktor:ktor-client-logging:2.0.2")
-    implementation("io.ktor:ktor-client-core:2.0.2")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
 
-    implementation("io.ktor:ktor-server-content-negotiation:2.0.2")
-    implementation("io.ktor:ktor-server-core:2.0.2")
-    implementation("io.ktor:ktor-server-netty:2.0.2")
-    implementation("io.ktor:ktor-server-metrics-micrometer:2.0.2")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.9.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
@@ -27,6 +31,6 @@ dependencies {
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("com.github.navikt.aap-libs:kafka-test:2.1.3")
-    testImplementation("io.ktor:ktor-server-test-host:2.0.2")
+    testImplementation("com.github.navikt.aap-libs:kafka-test:$aapLibsVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 }
