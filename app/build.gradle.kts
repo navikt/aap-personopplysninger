@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    id("com.github.johnrengelman.shadow")
+    kotlin("jvm") version "1.7.20"
+    id("io.ktor.plugin") version "2.1.2"
     application
 }
 
@@ -34,3 +37,23 @@ dependencies {
     testImplementation("com.github.navikt.aap-libs:kafka-test:$aapLibsVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 }
+
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+//    maven("https://packages.confluent.io/maven/") // transitive avro dependency
+}
+
+tasks {
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "18"
+    }
+    withType<Test> {
+        useJUnitPlatform()
+    }
+}
+
+kotlin.sourceSets["main"].kotlin.srcDirs("main")
+kotlin.sourceSets["test"].kotlin.srcDirs("test")
+sourceSets["main"].resources.srcDirs("main")
+sourceSets["test"].resources.srcDirs("test")

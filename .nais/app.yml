@@ -33,14 +33,14 @@ spec:
       memory: 512Mi
   liveness:
     path: /actuator/live
-    initialDelay: 3
-    periodSeconds: 3
-    failureThreshold: 21
+    initialDelay: 1
+    periodSeconds: 1
+    failureThreshold: 60
   readiness:
     path: /actuator/ready
-    initialDelay: 3
-    periodSeconds: 3
-    failureThreshold: 21
+    initialDelay: 1
+    periodSeconds: 1
+    failureThreshold: 60
   prometheus:
     enabled: true
     path: /actuator/metrics

@@ -3,7 +3,7 @@
 # lagt inn pakken manuelt. Vi mangler libc6-compat, som finnes i 17-jdk-focal som er ubunt-basert.
 FROM eclipse-temurin:18-jdk-focal
 
-COPY /app/build/libs/*.jar app.jar
+COPY /app/build/libs/app-all.jar app.jar
 
 RUN apt-get update && apt-get install -y locales
 
@@ -12,4 +12,4 @@ ENV LC_ALL="nb_NO.UTF-8"
 ENV LANG="nb_NO.UTF-8"
 ENV TZ="Europe/Oslo"
 
-CMD ["java", "-XX:+UseParallelGC", "-jar", "app.jar"]
+CMD ["java", "-XX:ActiveProcessorCount=2", "-jar", "app.jar"]
