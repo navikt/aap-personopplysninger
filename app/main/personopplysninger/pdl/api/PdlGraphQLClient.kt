@@ -60,10 +60,10 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, azureConfig: A
 
         return request
             .body<PdlResponse>()
-            .also { response ->
+//            .also { response ->
                 // graphql valideringsfeil
                 //if (response.errors != null) error("Feil fra PDL, ${response.errors}")
-            }
+//            }
     }
 
     private val callId: String get() = UUID.randomUUID().toString().also { log.info("calling pdl with call-id $it") }
