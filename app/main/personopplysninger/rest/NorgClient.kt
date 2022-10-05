@@ -1,4 +1,4 @@
-package personopplysninger.norg
+package personopplysninger.rest
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -36,10 +36,10 @@ internal class NorgClient(private val config: NorgConfig) {
         install(HttpRequestRetry)
     }
 
-    suspend fun hentArbeidsfordeling(request: ArbeidsfordelingRequest) =
+    suspend fun hentArbeidsfordeling(request: ArbeidsfordelingDtoRequest) =
         httpClient.post("${config.url}/api/v1/arbeidsfordeling/enheter/bestmatch") {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body<List<ArbeidsfordelingResponse>>()
+        }.body<List<ArbeidsfordelingDtoResponse>>()
 }

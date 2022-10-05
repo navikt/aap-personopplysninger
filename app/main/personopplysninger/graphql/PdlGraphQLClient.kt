@@ -1,4 +1,4 @@
-package personopplysninger.pdl.api
+package personopplysninger.graphql
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -58,12 +58,7 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, azureConfig: A
             setBody(query)
         }
 
-        return request
-            .body<PdlResponse>()
-//            .also { response ->
-                // graphql valideringsfeil
-                //if (response.errors != null) error("Feil fra PDL, ${response.errors}")
-//            }
+        return request.body()
     }
 
     private val callId: String get() = UUID.randomUUID().toString().also { log.info("calling pdl with call-id $it") }

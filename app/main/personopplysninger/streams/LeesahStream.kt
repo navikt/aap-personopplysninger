@@ -1,9 +1,8 @@
-package personopplysninger.pdl.streams
+//package personopplysninger.streams
+//
+//import org.apache.kafka.streams.StreamsBuilder
 
-import personopplysninger.Personopplysninger
-import org.apache.kafka.streams.StreamsBuilder
-
-fun StreamsBuilder.leesahStream() = this
+//fun StreamsBuilder.leesahStream() = this
 //    .consume(Topics.leesah)
 //    .filterNotNull { "skip-leesah-tombstone" }
 //    .filter(::isAdressebeskyttelse) { "filter-is-adressebeskyttelse" }

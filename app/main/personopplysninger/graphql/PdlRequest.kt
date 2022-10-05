@@ -1,4 +1,4 @@
-package personopplysninger.pdl.api
+package personopplysninger.graphql
 
 internal data class PdlRequest(val query: String, val variables: Variables) {
     data class Variables(val ident: String)

@@ -6,8 +6,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.test.KafkaStreamsMock
 import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.jupiter.api.Test
-import personopplysninger.Personopplysninger.PersonopplysningerDto
-import personopplysninger.skjerming.SkjermetDto
+import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.kafka.Topics
+import personopplysninger.streams.SkjermetDto
 import java.time.LocalDateTime
 import kotlin.test.Ignore
 

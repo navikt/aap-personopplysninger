@@ -2,10 +2,18 @@ package personopplysninger
 
 import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.jupiter.api.Test
-import personopplysninger.Personopplysninger.PersonopplysningerDto
-import personopplysninger.Personopplysninger.SkjermingDto
-import personopplysninger.mocks.*
-import personopplysninger.skjerming.SkjermetDto
+import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.domain.SkjermingDto
+import personopplysninger.kafka.Topics
+import personopplysninger.mocks.BYDEL_PERSON
+import personopplysninger.mocks.FORTROLIG_PERSON
+import personopplysninger.mocks.KOMMUNE_PERSON
+import personopplysninger.mocks.PERSON_UTEN_GRADERING
+import personopplysninger.mocks.STRENGT_FORTROLIG_PERSON
+import personopplysninger.mocks.STRENGT_FORTROLIG_UTLAND_PERSON
+import personopplysninger.mocks.SVENSK_PERSON
+import personopplysninger.mocks.UGRADERT_PERSON
+import personopplysninger.streams.SkjermetDto
 import java.time.LocalDate
 import java.time.LocalDateTime
 
