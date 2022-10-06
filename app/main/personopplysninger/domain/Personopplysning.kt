@@ -55,7 +55,7 @@ data class PersonopplysningerDto(
 ) {
     fun kanSetteSkjerming(): Boolean = skjerming == null
     fun kanSetteGraderingEllerGT(): Boolean = adressebeskyttelse == null || geografiskTilknytning == null
-    fun kanSetteEnhet(): Boolean = !kanSetteSkjerming() && !kanSetteGraderingEllerGT()
+    fun kanSetteEnhet(): Boolean = !kanSetteSkjerming() && !kanSetteGraderingEllerGT() && norgEnhetId == null
 }
 
 data class SkjermingDto(

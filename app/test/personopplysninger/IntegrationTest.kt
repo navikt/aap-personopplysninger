@@ -5,17 +5,17 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.test.KafkaStreamsMock
 import no.nav.aap.kafka.streams.test.readAndAssert
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import personopplysninger.domain.PersonopplysningerDto
 import personopplysninger.kafka.Topics
 import personopplysninger.streams.SkjermetDto
 import java.time.LocalDateTime
-import kotlin.test.Ignore
 
 internal class IntegrationTest {
 
     @Test
-    @Ignore
+    @Disabled
     fun `test integration`() = testApp { mocks ->
         val skjermingInput = mocks.kafka.inputTopic(Topics.skjerming)
         val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)
@@ -45,7 +45,9 @@ internal class IntegrationTest {
     private class MockEnvironment : AutoCloseable {
         val kafka = KafkaStreamsMock()
 
-        override fun close() { kafka.close() }
+        override fun close() {
+            kafka.close()
+        }
 
         // HOWTO: fyll azure stuff disse fra k8s secrets
         val environmentVariables = MapApplicationConfig(

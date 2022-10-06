@@ -15,6 +15,7 @@ import no.nav.aap.kafka.streams.extension.produce
 import no.nav.aap.ktor.config.loadConfig
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
+import org.apache.kafka.streams.kstream.Repartitioned
 import personopplysninger.graphql.PdlGraphQLClient
 import personopplysninger.kafka.Tables
 import personopplysninger.kafka.Topics
@@ -54,7 +55,7 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
     val skjermedeTable = streams
         .consume(Topics.skjerming)
         .filterNotNull("skip-skjerming-tombstone")
-        .repartition()
+        .repartition(Repartitioned.with(Topics.skjerming.keySerde, Topics.skjerming.valueSerde))
         .let {
             it.skjermingStream() // reiniti personopplysning med skjermign
             it.produce(Tables.skjerming) // lager ktable
@@ -62,7 +63,7 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
 
     streams.søknadStream()
     streams.personopplysningStream(skjermedeTable, pdlClient, norgClient)
-    streams.geografiskTilknytningStream()
+//    streams.geografiskTilknytningStream()
 
 //    streams.leesahStream()
 
