@@ -27,7 +27,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
 
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.4")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.9.5")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
 
     runtimeOnly("ch.qos.logback:logback-classic:1.4.3")
