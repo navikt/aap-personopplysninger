@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
           check-latest: true
 
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v2.3.3
         with:
           arguments: test app:buildFatJar --continue --no-daemon --configuration-cache
 
