@@ -11,8 +11,8 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import no.nav.aap.ktor.client.AzureAdTokenProvider
 import no.nav.aap.ktor.client.AzureConfig
-import no.nav.aap.ktor.client.HttpClientAzureAdTokenProvider
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.*
@@ -26,7 +26,7 @@ private val log = LoggerFactory.getLogger(PdlGraphQLClient::class.java)
 private val secureLog = LoggerFactory.getLogger("secureLog")
 
 internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, azureConfig: AzureConfig) {
-    private val tokenProvider = HttpClientAzureAdTokenProvider(azureConfig, pdlConfig.scope)
+    private val tokenProvider = AzureAdTokenProvider(azureConfig, pdlConfig.scope)
     private val httpClient = HttpClient(CIO) {
         install(HttpTimeout)
         install(HttpRequestRetry)
@@ -48,7 +48,7 @@ internal class PdlGraphQLClient(private val pdlConfig: PdlConfig, azureConfig: A
     suspend fun hentAdressebeskyttelse(personident: String) = query(PdlRequest.hentAdressebeskyttelse(personident))
 
     private suspend fun query(query: PdlRequest): PdlResponse {
-        val token = tokenProvider.getToken()
+        val token = tokenProvider.getClientCredentialToken()
         val request = httpClient.post(pdlConfig.url.toURL()) {
             accept(ContentType.Application.Json)
             header("Nav-Call-Id", callId)
