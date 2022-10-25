@@ -10,15 +10,16 @@ application {
     mainClass.set("personopplysninger.AppKt")
 }
 
-val aapLibsVersion = "3.4.7"
+val aapLibsVersion = "3.5.14"
 val ktorVersion = "2.1.2"
 
 dependencies {
     implementation("com.github.navikt.aap-libs:ktor-auth-azuread:$aapLibsVersion")
     implementation("com.github.navikt.aap-libs:kafka:$aapLibsVersion")
-//    implementation("com.github.navikt.aap-libs:kafka-avroserde:$aapLibsVersion")
     implementation("com.github.navikt.aap-libs:ktor-utils:$aapLibsVersion")
 
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
 
@@ -27,10 +28,11 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
 
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.4")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
-    runtimeOnly("ch.qos.logback:logback-classic:1.4.3")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.9.5")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
+    runtimeOnly("ch.qos.logback:logback-classic:1.4.4")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.2")
 
     testImplementation(kotlin("test"))

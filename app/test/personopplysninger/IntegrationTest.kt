@@ -4,7 +4,6 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.test.KafkaStreamsMock
-import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.jupiter.api.Test
 import personopplysninger.Personopplysninger.PersonopplysningerDto
 import personopplysninger.skjerming.SkjermetDto
@@ -16,15 +15,14 @@ internal class IntegrationTest {
     @Test
     @Ignore
     fun `test integration`() = testApp { mocks ->
-        val skjermingInput = mocks.kafka.inputTopic(Topics.skjerming)
-        val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)
-        val personopplysningerOutput = mocks.kafka.outputTopic(Topics.personopplysninger)
+        val skjermingTopic = mocks.kafka.testTopic(Topics.skjerming)
+        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
 
         val ident = ""
-        skjermingInput.pipeInput(ident, SkjermetDto(LocalDateTime.now().minusDays(30), null))
-        personopplysningerInput.pipeInput(ident, PersonopplysningerDto())
+        skjermingTopic.produce(ident) { SkjermetDto(LocalDateTime.now().minusDays(30), null) }
+        personopplysningerTopic.produce(ident, ::PersonopplysningerDto)
 
-        personopplysningerOutput.readAndAssert()
+        personopplysningerTopic.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(ident, 3)
     }
@@ -44,7 +42,9 @@ internal class IntegrationTest {
     private class MockEnvironment : AutoCloseable {
         val kafka = KafkaStreamsMock()
 
-        override fun close() { kafka.close() }
+        override fun close() {
+            kafka.close()
+        }
 
         // HOWTO: fyll azure stuff disse fra k8s secrets
         val environmentVariables = MapApplicationConfig(
