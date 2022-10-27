@@ -1,4 +1,4 @@
-name: App
+name:
 
 on:
   push:
@@ -12,7 +12,6 @@ env:
 
 jobs:
   build:
-    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,7 +28,7 @@ jobs:
       - uses: dorny/test-reporter@v1.6.0
         if: always()
         with:
-          name: Test results
+          name: test
           path: "app/build/test-results/test/TEST-*.xml"
           reporter: java-junit
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,7 +45,6 @@ jobs:
           docker push ghcr.io/navikt/${{ github.repository }} --all-tags
 
   deploy-dev:
-    name: Deploy to dev
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -60,7 +58,6 @@ jobs:
           VARS: .nais/dev.yml
 
   deploy-prod:
-    name: Deploy to prod
     needs: build
     runs-on: ubuntu-latest
     steps:

@@ -1,3 +1,3 @@
-rootProject.name = "personopplysninger"
+rootProject.name = "aap-personopplysninger"
 
 include("app")
