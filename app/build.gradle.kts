@@ -10,7 +10,7 @@ application {
     mainClass.set("personopplysninger.AppKt")
 }
 
-val aapLibsVersion = "3.5.27"
+val aapLibsVersion = "3.5.30"
 val ktorVersion = "2.1.3"
 
 dependencies {
