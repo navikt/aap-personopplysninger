@@ -32,7 +32,7 @@ dependencies {
 
     implementation("io.micrometer:micrometer-registry-prometheus:1.10.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
-    runtimeOnly("ch.qos.logback:logback-classic:1.4.4")
+    runtimeOnly("ch.qos.logback:logback-classic:1.4.5")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.2")
 
     testImplementation(kotlin("test"))
