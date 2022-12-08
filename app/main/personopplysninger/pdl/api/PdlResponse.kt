@@ -11,9 +11,13 @@ internal data class PdlData(
     val hentGeografiskTilknytning: GeografiskTilknytning?,
     val hentPerson: Person?,
 ) {
-    internal data class Person(val adressebeskyttelse: List<Adressebeskyttelse>)
+    internal data class Person(
+        val adressebeskyttelse: List<Adressebeskyttelse>,
+        val navn: List<PdlNavn>,
+    )
     internal data class Adressebeskyttelse(val gradering: String)
     internal data class GeografiskTilknytning(val gtLand: String?, val gtKommune: String?, val gtBydel: String?, val gtType: String)
+    internal data class PdlNavn(val fornavn: String, val etternavn: String, val mellomnavn: String?)
 }
 
 internal data class PdlError(

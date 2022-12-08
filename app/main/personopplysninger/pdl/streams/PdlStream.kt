@@ -20,9 +20,15 @@ internal fun pdlStream(pdlClient: PdlGraphQLClient) = { chain: KStream<String, P
                 secureLog.warn("Feil fra PDL, ignorerer behov, ${response.errors}")
                 return@mapValues null
             }
+            val navn = response.data?.hentPerson?.navn?.last() ?: error("fant ikke påkrevd navn")
             personopplysninger.apply {
                 settAdressebeskyttelse(response.gradering())
                 settGeografiskTilknytning(response.geografiskTilknytning())
+                settNavn(
+                        fornavn = navn.fornavn,
+                        etternavn = navn.etternavn,
+                        mellomnavn = navn.mellomnavn,
+                )
             }
         }
         .filterNotNull("filter-not-null-personopplysning-pdl-error")

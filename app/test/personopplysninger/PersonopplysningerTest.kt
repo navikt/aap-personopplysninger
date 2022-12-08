@@ -29,8 +29,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(KOMMUNE_PERSON, 3)
             .hasValueEquals(KOMMUNE_PERSON, 0) { skjermet }
-            .hasValueEquals(KOMMUNE_PERSON, 1) { skjermet + gtKommune + ugradert }
-            .hasValueEquals(KOMMUNE_PERSON, 2) { skjermet + gtKommune + ugradert + enhet }
+            .hasValueEquals(KOMMUNE_PERSON, 1) { skjermet + gtKommune + ugradert + navn}
+            .hasValueEquals(KOMMUNE_PERSON, 2) { skjermet + gtKommune + ugradert + navn + enhet }
     }
 
     @Test
@@ -43,8 +43,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(BYDEL_PERSON, 3)
             .hasValueEquals(BYDEL_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(BYDEL_PERSON, 1) { ikkeSkjermet + gtBydel + ugradert }
-            .hasValueEquals(BYDEL_PERSON, 2) { ikkeSkjermet + gtBydel + ugradert + enhet }
+            .hasValueEquals(BYDEL_PERSON, 1) { ikkeSkjermet + gtBydel + ugradert + navn }
+            .hasValueEquals(BYDEL_PERSON, 2) { ikkeSkjermet + gtBydel + ugradert + navn + enhet }
     }
 
     @Test
@@ -57,8 +57,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(SVENSK_PERSON, 3)
             .hasValueEquals(SVENSK_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(SVENSK_PERSON, 1) { ikkeSkjermet + gtLand + ugradert }
-            .hasValueEquals(SVENSK_PERSON, 2) { ikkeSkjermet + gtLand + ugradert + enhet }
+            .hasValueEquals(SVENSK_PERSON, 1) { ikkeSkjermet + gtLand + ugradert + navn }
+            .hasValueEquals(SVENSK_PERSON, 2) { ikkeSkjermet + gtLand + ugradert + navn + enhet }
     }
 
     @Test
@@ -71,8 +71,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(PERSON_UTEN_GRADERING, 3)
             .hasValueEquals(PERSON_UTEN_GRADERING, 0) { ikkeSkjermet }
-            .hasValueEquals(PERSON_UTEN_GRADERING, 1) { ikkeSkjermet + gtKommune + ugradert }
-            .hasValueEquals(PERSON_UTEN_GRADERING, 2) { ikkeSkjermet + gtKommune + ugradert + enhet }
+            .hasValueEquals(PERSON_UTEN_GRADERING, 1) { ikkeSkjermet + gtKommune + ugradert + navn }
+            .hasValueEquals(PERSON_UTEN_GRADERING, 2) { ikkeSkjermet + gtKommune + ugradert + navn + enhet }
     }
 
     @Test
@@ -85,8 +85,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(UGRADERT_PERSON, 3)
             .hasValueEquals(UGRADERT_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(UGRADERT_PERSON, 1) { ikkeSkjermet + gtKommune + ugradert }
-            .hasValueEquals(UGRADERT_PERSON, 2) { ikkeSkjermet + gtKommune + ugradert + enhet }
+            .hasValueEquals(UGRADERT_PERSON, 1) { ikkeSkjermet + gtKommune + ugradert + navn }
+            .hasValueEquals(UGRADERT_PERSON, 2) { ikkeSkjermet + gtKommune + ugradert + navn + enhet }
     }
 
     @Test
@@ -99,8 +99,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(FORTROLIG_PERSON, 3)
             .hasValueEquals(FORTROLIG_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(FORTROLIG_PERSON, 1) { ikkeSkjermet + gtKommune + fortrolig }
-            .hasValueEquals(FORTROLIG_PERSON, 2) { ikkeSkjermet + gtKommune + fortrolig + enhet }
+            .hasValueEquals(FORTROLIG_PERSON, 1) { ikkeSkjermet + gtKommune + fortrolig + navn}
+            .hasValueEquals(FORTROLIG_PERSON, 2) { ikkeSkjermet + gtKommune + fortrolig + navn + enhet }
     }
 
     @Test
@@ -113,8 +113,8 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(STRENGT_FORTROLIG_PERSON, 3)
             .hasValueEquals(STRENGT_FORTROLIG_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(STRENGT_FORTROLIG_PERSON, 1) { ikkeSkjermet + gtKommune + strengtFortrolig }
-            .hasValueEquals(STRENGT_FORTROLIG_PERSON, 2) { ikkeSkjermet + gtKommune + strengtFortrolig + enhet }
+            .hasValueEquals(STRENGT_FORTROLIG_PERSON, 1) { ikkeSkjermet + gtKommune + strengtFortrolig + navn }
+            .hasValueEquals(STRENGT_FORTROLIG_PERSON, 2) { ikkeSkjermet + gtKommune + strengtFortrolig + navn + enhet }
     }
 
     @Test
@@ -127,9 +127,9 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(STRENGT_FORTROLIG_UTLAND_PERSON, 3)
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 1) { ikkeSkjermet + gtKommune + strengtFortroligUtland }
+            .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 1) { ikkeSkjermet + gtKommune + strengtFortroligUtland + navn }
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 2) {
-                ikkeSkjermet + gtKommune + strengtFortroligUtland + enhet
+                ikkeSkjermet + gtKommune + strengtFortroligUtland + navn + enhet
             }
     }
 }
@@ -138,7 +138,8 @@ private operator fun PersonopplysningerDto.plus(other: PersonopplysningerDto) = 
     skjerming = skjerming ?: other.skjerming,
     geografiskTilknytning = geografiskTilknytning ?: other.geografiskTilknytning,
     adressebeskyttelse = adressebeskyttelse ?: other.adressebeskyttelse,
-    norgEnhetId = norgEnhetId ?: other.norgEnhetId
+    norgEnhetId = norgEnhetId ?: other.norgEnhetId,
+    navn = navn ?: other.navn
 )
 
 private val skjermet = PersonopplysningerDto(skjerming = SkjermingDto(true, LocalDate.now().minusDays(30), null))
@@ -151,3 +152,5 @@ private val fortrolig = PersonopplysningerDto(adressebeskyttelse = "FORTROLIG")
 private val strengtFortrolig = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG")
 private val strengtFortroligUtland = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG_UTLAND")
 private val enhet = PersonopplysningerDto(norgEnhetId = "4201")
+private val navn = PersonopplysningerDto(navn = Personopplysninger.NavnKafkaDto("Ola", "Normann", null))
+

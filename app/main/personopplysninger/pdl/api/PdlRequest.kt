@@ -34,6 +34,11 @@ private const val alt = """
         hentPerson(ident: $ident) {
             adressebeskyttelse {
                 gradering
+            },
+            navn {
+                fornavn,
+                etternavn,
+                mellomnavn
             }
         }
     }

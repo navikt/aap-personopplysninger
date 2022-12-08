@@ -93,7 +93,9 @@ private val isSkjermingStream: (_: String, value: Personopplysninger) -> Boolean
 }
 
 private val isPdlStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
-    personopplysning.kanSetteAdressebeskyttelse() || personopplysning.kanSetteGeografiskTilknytning()
+    personopplysning.kanSetteAdressebeskyttelse() ||
+            personopplysning.kanSetteGeografiskTilknytning() ||
+            personopplysning.kanSetteNavn()
 }
 
 private val isNorgStream: (_: String, value: Personopplysninger) -> Boolean = { _, personopplysning ->
