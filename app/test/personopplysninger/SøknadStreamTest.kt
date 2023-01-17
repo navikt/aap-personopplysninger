@@ -1,7 +1,8 @@
 package personopplysninger
 
 import org.junit.jupiter.api.Test
-import personopplysninger.søknad.SøknadDto
+import personopplysninger.kafka.Topics
+import personopplysninger.streams.SøknadDto
 
 internal class SøknadStreamTest {
 
@@ -20,5 +21,4 @@ internal class SøknadStreamTest {
             .assertThat()
             .hasNumberOfRecordsForKey("123", 4)
     }
-
 }

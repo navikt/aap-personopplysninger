@@ -4,25 +4,28 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.test.KafkaStreamsMock
+import no.nav.aap.kafka.streams.test.readAndAssert
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import personopplysninger.Personopplysninger.PersonopplysningerDto
-import personopplysninger.skjerming.SkjermetDto
+import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.kafka.Topics
+import personopplysninger.streams.SkjermetDto
 import java.time.LocalDateTime
-import kotlin.test.Ignore
 
 internal class IntegrationTest {
 
     @Test
-    @Ignore
+    @Disabled("Kun for debug i miljø med ident mot PDL")
     fun `test integration`() = testApp { mocks ->
-        val skjermingTopic = mocks.kafka.testTopic(Topics.skjerming)
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val skjermingInput = mocks.kafka.inputTopic(Topics.skjerming)
+        val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)
+        val personopplysningerOutput = mocks.kafka.outputTopic(Topics.personopplysninger)
 
         val ident = ""
-        skjermingTopic.produce(ident) { SkjermetDto(LocalDateTime.now().minusDays(30), null) }
-        personopplysningerTopic.produce(ident, ::PersonopplysningerDto)
+        skjermingInput.pipeInput(ident, SkjermetDto(LocalDateTime.now().minusDays(30), null))
+        personopplysningerInput.pipeInput(ident, PersonopplysningerDto())
 
-        personopplysningerTopic.assertThat()
+        personopplysningerOutput.readAndAssert()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(ident, 3)
     }

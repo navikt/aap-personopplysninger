@@ -1,8 +1,10 @@
 package personopplysninger
 
 import org.junit.jupiter.api.Test
-import personopplysninger.Personopplysninger.PersonopplysningerDto
-import personopplysninger.Personopplysninger.SkjermingDto
+import personopplysninger.domain.NavnDto
+import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.domain.SkjermingDto
+import personopplysninger.kafka.Topics
 import personopplysninger.mocks.BYDEL_PERSON
 import personopplysninger.mocks.FORTROLIG_PERSON
 import personopplysninger.mocks.KOMMUNE_PERSON
@@ -11,7 +13,8 @@ import personopplysninger.mocks.STRENGT_FORTROLIG_PERSON
 import personopplysninger.mocks.STRENGT_FORTROLIG_UTLAND_PERSON
 import personopplysninger.mocks.SVENSK_PERSON
 import personopplysninger.mocks.UGRADERT_PERSON
-import personopplysninger.skjerming.SkjermetDto
+import personopplysninger.streams.SkjermetDto
+import personopplysninger.streams.SøknadDto
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -19,27 +22,28 @@ class PersonopplysningerTest {
 
     @Test
     fun `personopplysninger joines i rekkefølge - skjerming, pdl, norg`() = testApp { mocks ->
-        val skjermingTopic = mocks.kafka.testTopic(Topics.skjerming)
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val skjermingInput = mocks.kafka.testTopic(Topics.skjerming)
+        val søknadInput = mocks.kafka.testTopic(Topics.søknad)
+        val personopplysningerOutput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        skjermingTopic.produce(KOMMUNE_PERSON) { SkjermetDto(LocalDateTime.now().minusDays(30), null) }
-        personopplysningerTopic.produce(KOMMUNE_PERSON, ::PersonopplysningerDto)
+        skjermingInput.produce(KOMMUNE_PERSON) { SkjermetDto(LocalDateTime.now().minusDays(30), null) }
+        søknadInput.produce(KOMMUNE_PERSON) { SøknadDto() }
 
-        personopplysningerTopic.assertThat()
-            .hasNumberOfRecords(3)
-            .hasNumberOfRecordsForKey(KOMMUNE_PERSON, 3)
-            .hasValueEquals(KOMMUNE_PERSON, 0) { skjermet }
-            .hasValueEquals(KOMMUNE_PERSON, 1) { skjermet + gtKommune + ugradert + navn}
-            .hasValueEquals(KOMMUNE_PERSON, 2) { skjermet + gtKommune + ugradert + navn + enhet }
+        personopplysningerOutput.assertThat()
+            .hasNumberOfRecordsForKey(KOMMUNE_PERSON, 4)
+            .hasValueEquals(KOMMUNE_PERSON, 0) { PersonopplysningerDto() }
+            .hasValueEquals(KOMMUNE_PERSON, 1) { skjermet }
+            .hasValueEquals(KOMMUNE_PERSON, 2) { skjermet + gtKommune + ugradert + navn }
+            .hasValueEquals(KOMMUNE_PERSON, 3) { skjermet + gtKommune + ugradert + navn + enhet }
     }
 
     @Test
     fun `person knyttes til bydel`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysninger = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(BYDEL_PERSON, ::PersonopplysningerDto)
+        personopplysninger.produce(BYDEL_PERSON) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysninger.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(BYDEL_PERSON, 3)
             .hasValueEquals(BYDEL_PERSON, 0) { ikkeSkjermet }
@@ -49,11 +53,11 @@ class PersonopplysningerTest {
 
     @Test
     fun `person knyttes til land`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(SVENSK_PERSON, ::PersonopplysningerDto)
+        personopplysningerInput.produce(SVENSK_PERSON) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysningerInput.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(SVENSK_PERSON, 3)
             .hasValueEquals(SVENSK_PERSON, 0) { ikkeSkjermet }
@@ -63,11 +67,11 @@ class PersonopplysningerTest {
 
     @Test
     fun `person uten adressebeskyttelse`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(PERSON_UTEN_GRADERING, ::PersonopplysningerDto)
+        personopplysningerInput.produce(PERSON_UTEN_GRADERING) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysningerInput.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(PERSON_UTEN_GRADERING, 3)
             .hasValueEquals(PERSON_UTEN_GRADERING, 0) { ikkeSkjermet }
@@ -77,11 +81,11 @@ class PersonopplysningerTest {
 
     @Test
     fun `ugradert person`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(UGRADERT_PERSON, ::PersonopplysningerDto)
+        personopplysningerInput.produce(UGRADERT_PERSON) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysningerInput.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(UGRADERT_PERSON, 3)
             .hasValueEquals(UGRADERT_PERSON, 0) { ikkeSkjermet }
@@ -91,25 +95,25 @@ class PersonopplysningerTest {
 
     @Test
     fun `fortrolig person`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(FORTROLIG_PERSON, ::PersonopplysningerDto)
+        personopplysningerInput.produce(FORTROLIG_PERSON) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysningerInput.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(FORTROLIG_PERSON, 3)
             .hasValueEquals(FORTROLIG_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(FORTROLIG_PERSON, 1) { ikkeSkjermet + gtKommune + fortrolig + navn}
+            .hasValueEquals(FORTROLIG_PERSON, 1) { ikkeSkjermet + gtKommune + fortrolig + navn }
             .hasValueEquals(FORTROLIG_PERSON, 2) { ikkeSkjermet + gtKommune + fortrolig + navn + enhet }
     }
 
     @Test
     fun `strengt fortrolig person`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(STRENGT_FORTROLIG_PERSON, ::PersonopplysningerDto)
+        personopplysningerInput.produce(STRENGT_FORTROLIG_PERSON) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysningerInput.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(STRENGT_FORTROLIG_PERSON, 3)
             .hasValueEquals(STRENGT_FORTROLIG_PERSON, 0) { ikkeSkjermet }
@@ -119,11 +123,11 @@ class PersonopplysningerTest {
 
     @Test
     fun `strengt fortrolig person utland`() = testApp { mocks ->
-        val personopplysningerTopic = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
-        personopplysningerTopic.produce(STRENGT_FORTROLIG_UTLAND_PERSON, ::PersonopplysningerDto)
+        personopplysningerInput.produce(STRENGT_FORTROLIG_UTLAND_PERSON) { PersonopplysningerDto() }
 
-        personopplysningerTopic.assertThat()
+        personopplysningerInput.assertThat()
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(STRENGT_FORTROLIG_UTLAND_PERSON, 3)
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 0) { ikkeSkjermet }
@@ -152,5 +156,4 @@ private val fortrolig = PersonopplysningerDto(adressebeskyttelse = "FORTROLIG")
 private val strengtFortrolig = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG")
 private val strengtFortroligUtland = PersonopplysningerDto(adressebeskyttelse = "STRENGT_FORTROLIG_UTLAND")
 private val enhet = PersonopplysningerDto(norgEnhetId = "4201")
-private val navn = PersonopplysningerDto(navn = Personopplysninger.NavnKafkaDto("Ola", "Normann", null))
-
+private val navn = PersonopplysningerDto(navn = NavnDto("Ola", null, "Normann"))

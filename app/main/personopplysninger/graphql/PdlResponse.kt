@@ -1,10 +1,17 @@
-package personopplysninger.pdl.api
+package personopplysninger.graphql
 
 internal data class PdlResponse(
     val data: PdlData?,
     val errors: List<PdlError>?,
 ) {
     val adressebeskyttelse get() = data?.hentPerson?.adressebeskyttelse?.singleOrNull()
+
+    fun gradering() = data?.hentPerson?.adressebeskyttelse?.singleOrNull()?.gradering ?: "UGRADERT"
+    fun geografiskTilknytning() = data?.hentGeografiskTilknytning?.gtBydel
+        ?: data?.hentGeografiskTilknytning?.gtKommune
+        ?: data?.hentGeografiskTilknytning?.gtLand
+        ?: data?.hentGeografiskTilknytning?.gtType
+        ?: "UKJENT"
 }
 
 internal data class PdlData(
@@ -16,7 +23,12 @@ internal data class PdlData(
         val navn: List<PdlNavn>,
     )
     internal data class Adressebeskyttelse(val gradering: String)
-    internal data class GeografiskTilknytning(val gtLand: String?, val gtKommune: String?, val gtBydel: String?, val gtType: String)
+    internal data class GeografiskTilknytning(
+        val gtLand: String?,
+        val gtKommune: String?,
+        val gtBydel: String?,
+        val gtType: String
+    )
     internal data class PdlNavn(val fornavn: String, val etternavn: String, val mellomnavn: String?)
 }
 
