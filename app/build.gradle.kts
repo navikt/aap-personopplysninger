@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
-    id("io.ktor.plugin") version "2.1.2"
+    kotlin("jvm") version "1.8.0"
+    id("io.ktor.plugin") version "2.2.2"
     application
 }
 
@@ -10,8 +10,8 @@ application {
     mainClass.set("personopplysninger.AppKt")
 }
 
-val aapLibsVersion = "3.5.12"
-val ktorVersion = "2.1.2"
+val aapLibsVersion = "3.5.39"
+val ktorVersion = "2.2.2"
 
 dependencies {
     implementation("com.github.navikt.aap-libs:ktor-auth-azuread:$aapLibsVersion")
@@ -30,7 +30,7 @@ dependencies {
 
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.4")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.10.3")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
     runtimeOnly("ch.qos.logback:logback-classic:1.4.3")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.2")
@@ -42,13 +42,13 @@ dependencies {
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
+    maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 //    maven("https://packages.confluent.io/maven/") // transitive avro dependency
 }
 
 tasks {
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "18"
+        kotlinOptions.jvmTarget = "19"
     }
     withType<Test> {
         useJUnitPlatform()

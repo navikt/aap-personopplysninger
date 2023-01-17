@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 internal class IntegrationTest {
 
     @Test
-    @Disabled
+    @Disabled("Kun for debug i miljø med ident mot PDL")
     fun `test integration`() = testApp { mocks ->
         val skjermingInput = mocks.kafka.inputTopic(Topics.skjerming)
         val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)

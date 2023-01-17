@@ -57,7 +57,7 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
         .filterNotNull("skip-skjerming-tombstone")
         .repartition(Repartitioned.with(Topics.skjerming.keySerde, Topics.skjerming.valueSerde))
         .let {
-            it.skjermingStream() // reiniti personopplysning med skjermign
+            // it.skjermingStream() // reiniti personopplysning med skjermign
             it.produce(Tables.skjerming) // lager ktable
         }
 

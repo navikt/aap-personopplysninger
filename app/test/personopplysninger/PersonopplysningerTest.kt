@@ -20,23 +20,21 @@ import java.time.LocalDateTime
 
 class PersonopplysningerTest {
 
-    // TODO: streamen produserer 7 personopplysninger, 4 blir generert fra søknad,
-    //  og løypa starter på nytt (+3 updates) når skjerming legges til (tolkes som update)
     @Test
     fun `personopplysninger joines i rekkefølge - skjerming, pdl, norg`() = testApp { mocks ->
         val skjermingInput = mocks.kafka.inputTopic(Topics.skjerming)
         val søknadInput = mocks.kafka.inputTopic(Topics.søknad)
         val personopplysningerOutput = mocks.kafka.outputTopic(Topics.personopplysninger)
 
-//        skjermingInput.pipeInput(KOMMUNE_PERSON, SkjermetDto(LocalDateTime.now().minusDays(30), null))
+        skjermingInput.pipeInput(KOMMUNE_PERSON, SkjermetDto(LocalDateTime.now().minusDays(30), null))
         søknadInput.pipeInput(KOMMUNE_PERSON, SøknadDto())
 
         personopplysningerOutput.readAndAssert()
             .hasNumberOfRecordsForKey(KOMMUNE_PERSON, 4)
             .hasValueEquals(KOMMUNE_PERSON, 0) { PersonopplysningerDto() }
-            .hasValueEquals(KOMMUNE_PERSON, 1) { ikkeSkjermet }
-            .hasValueEquals(KOMMUNE_PERSON, 2) { ikkeSkjermet + gtKommune + ugradert }
-            .hasValueEquals(KOMMUNE_PERSON, 3) { ikkeSkjermet + gtKommune + ugradert + enhet }
+            .hasValueEquals(KOMMUNE_PERSON, 1) { skjermet }
+            .hasValueEquals(KOMMUNE_PERSON, 2) { skjermet + gtKommune + ugradert }
+            .hasValueEquals(KOMMUNE_PERSON, 3) { skjermet + gtKommune + ugradert + enhet }
     }
 
     @Test
