@@ -46,7 +46,13 @@ private const val gtKommune = """
       "gtType": "KOMMUNE"
     },
     "hentPerson": {
-      "adressebeskyttelse": []
+      "adressebeskyttelse": [],
+      "navn": [
+        {
+          "fornavn": "Ola",
+          "etternavn": "Normann"
+        }
+      ]
     }
   },
   "extensions": {}
@@ -64,7 +70,13 @@ private const val gtBydel = """
       "gtType": "BYDEL"
     },
     "hentPerson": {
-      "adressebeskyttelse": []
+      "adressebeskyttelse": [],
+      "navn": [
+        {
+          "fornavn": "Ola",
+          "etternavn": "Normann"
+        }
+      ]
     }
   },
   "extensions": {}
@@ -82,7 +94,13 @@ private const val gtLand = """
       "gtType": "UTLAND"
     },
     "hentPerson": {
-      "adressebeskyttelse": []
+      "adressebeskyttelse": [],
+      "navn": [
+        {
+          "fornavn": "Ola",
+          "etternavn": "Normann"
+        }
+      ]
     }
   },
   "extensions": {}
@@ -104,6 +122,12 @@ private const val ugradert = """
             {
               "gradering": "UGRADERT"
             }
+          ],
+          "navn": [
+            {
+              "fornavn": "Ola",
+              "etternavn": "Normann"
+            }
           ]
         }
       },
@@ -122,7 +146,13 @@ private const val ukjent = """
           "gtType": "KOMMUNE"
         },
         "hentPerson": {
-          "adressebeskyttelse": []
+          "adressebeskyttelse": [],
+          "navn": [
+            {
+              "fornavn": "Ola",
+              "etternavn": "Normann"
+            }
+          ]
         }
       },
       "extensions": {}
@@ -144,6 +174,12 @@ private const val fortrolig = """
       "adressebeskyttelse": [
         {
           "gradering": "FORTROLIG"
+        }
+      ],
+      "navn": [
+        {
+          "fornavn": "Ola",
+          "etternavn": "Normann"
         }
       ]
     }
@@ -167,6 +203,12 @@ private const val strengtFortrolig = """
             {
               "gradering": "STRENGT_FORTROLIG"
             }
+          ],
+          "navn": [
+            {
+              "fornavn": "Ola",
+              "etternavn": "Normann"
+            }
           ]
         }
       },
@@ -188,6 +230,12 @@ private const val strengtFortroligUtland = """
       "adressebeskyttelse": [
         {
           "gradering": "STRENGT_FORTROLIG_UTLAND"
+        }
+      ],
+      "navn": [
+        {
+          "fornavn": "Ola",
+          "etternavn": "Normann"
         }
       ]
     }

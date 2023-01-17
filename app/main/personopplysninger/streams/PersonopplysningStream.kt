@@ -28,7 +28,7 @@ internal fun StreamsBuilder.personopplysningStream(
         .filterNotNull("skip-personopplysning-tombstone")
         .split(named("split"))
         .branch({ _, dto -> dto.kanSetteSkjerming() }, skjermingBranch(skjermede))
-        .branch({ _, dto -> dto.kanSetteGraderingEllerGT() }, pdlBranch(pdlClient))
+        .branch({ _, dto -> dto.kanSettePdlopplysninger() }, pdlBranch(pdlClient))
         .branch({ _, dto -> dto.kanSetteEnhet() }, norgBranch(norgClient))
 }
 
@@ -56,6 +56,8 @@ internal fun pdlBranch(pdlClient: PdlGraphQLClient): Branched<String, Personoppl
                 }
                 personopplysninger.settGeografiskTilknytning(response.geografiskTilknytning())
                 personopplysninger.settAdressebeskyttelse(response.gradering())
+                val navn = requireNotNull(response.data?.hentPerson?.navn?.last()) {"Fant ikke navn i PDL"}
+                personopplysninger.settNavn(navn.fornavn, navn.mellomnavn, navn.etternavn)
                 personopplysninger.toDto()
             }
             .filterNotNull("filter-not-null-personopplysning-pdl-error")
