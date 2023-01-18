@@ -20,9 +20,8 @@ import personopplysninger.graphql.PdlGraphQLClient
 import personopplysninger.kafka.Tables
 import personopplysninger.kafka.Topics
 import personopplysninger.rest.NorgClient
-import personopplysninger.streams.geografiskTilknytningStream
+import personopplysninger.streams.*
 import personopplysninger.streams.personopplysningStream
-import personopplysninger.streams.skjermingStream
 import personopplysninger.streams.søknadStream
 
 fun main() {
@@ -60,7 +59,7 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
             // it.skjermingStream() // reiniti personopplysning med skjermign
             it.produce(Tables.skjerming) // lager ktable
         }
-
+    streams.indentHendelseStream()
     streams.søknadStream()
     streams.personopplysningStream(skjermedeTable, pdlClient, norgClient)
 //    streams.geografiskTilknytningStream()

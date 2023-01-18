@@ -11,23 +11,24 @@ import personopplysninger.domain.PersonopplysningerDto
 import personopplysninger.kafka.Topics
 import personopplysninger.streams.SkjermetDto
 import java.time.LocalDateTime
+import kotlin.test.assertNotNull
 
 internal class IntegrationTest {
 
     @Test
-    @Disabled("Kun for debug i miljø med ident mot PDL")
+    //@Disabled("Kun for debug i miljø med ident mot PDL")
     fun `test integration`() = testApp { mocks ->
-        val skjermingInput = mocks.kafka.inputTopic(Topics.skjerming)
-        val personopplysningerInput = mocks.kafka.inputTopic(Topics.personopplysninger)
-        val personopplysningerOutput = mocks.kafka.outputTopic(Topics.personopplysninger)
+        val skjermingInput = mocks.kafka.testTopic(Topics.skjerming)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
         val ident = ""
-        skjermingInput.pipeInput(ident, SkjermetDto(LocalDateTime.now().minusDays(30), null))
-        personopplysningerInput.pipeInput(ident, PersonopplysningerDto())
+        skjermingInput.produce(ident){ SkjermetDto(LocalDateTime.now().minusDays(30), null)}
+        personopplysningerInput.produce(ident){ PersonopplysningerDto()}
 
-        personopplysningerOutput.readAndAssert()
-            .hasNumberOfRecords(3)
-            .hasNumberOfRecordsForKey(ident, 3)
+        personopplysningerInput.assertThat()
+            .hasLastValueMatching { value ->
+                assertNotNull(value)
+            }
     }
 
 

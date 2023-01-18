@@ -1,5 +1,13 @@
 package personopplysninger
 
+import io.ktor.util.*
+import org.apache.avro.Schema
+import org.apache.avro.SchemaBuilder
+import org.apache.avro.generic.GenericData
+import org.apache.avro.generic.GenericRecord
+import org.apache.avro.generic.GenericRecordBuilder
+import org.apache.avro.reflect.ReflectData
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import personopplysninger.domain.NavnDto
 import personopplysninger.domain.PersonopplysningerDto
@@ -13,12 +21,164 @@ import personopplysninger.mocks.STRENGT_FORTROLIG_PERSON
 import personopplysninger.mocks.STRENGT_FORTROLIG_UTLAND_PERSON
 import personopplysninger.mocks.SVENSK_PERSON
 import personopplysninger.mocks.UGRADERT_PERSON
-import personopplysninger.streams.SkjermetDto
-import personopplysninger.streams.SøknadDto
+import personopplysninger.streams.*
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.test.assertEquals
 
 class PersonopplysningerTest {
+    @Language("Json")
+    val json = """ 
+        {
+    "type": "record",
+    "name": "Aktor",
+    "namespace": "no.nav.person.pdl.aktor.v2",
+    "fields": [
+      {
+        "name": "identifikatorer",
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "Identifikator",
+            "fields": [
+              {
+                "name": "idnummer",
+                "type": {
+                  "type": "string",
+                  "avro.java.string": "String"
+                }
+              },
+              {
+                "name": "type",
+                "type": {
+                  "type": "enum",
+                  "name": "Type",
+                  "symbols": [
+                    "FOLKEREGISTERIDENT",
+                    "AKTORID",
+                    "NPID"
+                  ]
+                }
+              },
+              {
+                "name": "gjeldende",
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+    """.trimIndent()
+
+    val listJson = """
+        {
+          "type": "array",
+          "namespace": "no.nav.person.pdl.aktor.v2",
+          "items": {
+            "type": "record",
+            "name": "Identifikator",
+            "fields": [
+              {
+                "name": "idnummer",
+                "type": {
+                  "type": "string",
+                  "avro.java.string": "String"
+                }
+              },
+              {
+                "name": "type",
+                "type": {
+                  "type": "enum",
+                  "name": "Type",
+                  "symbols": [
+                    "FOLKEREGISTERIDENT",
+                    "AKTORID",
+                    "NPID"
+                  ]
+                }
+              },
+              {
+                "name": "gjeldende",
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+    """.trimIndent()
+
+    @Language("Json")
+    val identifikatorerSchemaJson = """
+        {
+    "type": "record",
+    "name": "Identifikator",
+    "namespace": "no.nav.person.pdl.aktor.v2",
+    "fields": [
+      {
+        "name": "idnummer",
+        "type": {
+          "type": "string",
+          "avro.java.string": "String"
+        }
+      },
+      {
+        "name": "type",
+        "type": {
+          "type": "enum",
+          "name": "Type",
+          "symbols": [
+            "FOLKEREGISTERIDENT",
+            "AKTORID",
+            "NPID"
+          ]
+        }
+      },
+      {
+        "name": "gjeldende",
+        "type": "boolean"
+      }
+    ]
+  }
+    """.trimIndent()
+
+    val enumSchemaJson = """
+        {
+    "type": "enum",
+    "name": "Type",
+    "namespace": "no.nav.person.pdl.aktor.v2",
+    "symbols": [
+      "FOLKEREGISTERIDENT",
+      "AKTORID",
+      "NPID"
+    ]
+  }
+    """.trimIndent()
+
+    @Test
+    fun test() = testApp { mocks ->
+        val identhendelse = mocks.kafka.testTopic(Topics.identHendelser)
+        val test = mocks.kafka.testTopic(Topics.test)
+        val schema = Schema.Parser().parse(json)
+        val listSchema = Schema.Parser().parse(listJson)
+        val enumSchema = Schema.Parser().parse(enumSchemaJson)
+        val identifikatorerSchema = Schema.Parser().parse(identifikatorerSchemaJson)
+
+        val identifikator = GenericData.Record(identifikatorerSchema).apply {
+            put("idnummer", "1234")
+            put("type", GenericData.EnumSymbol(enumSchema, "FOLKEREGISTERIDENT"))
+            put("gjeldende", true)
+        }
+        val record = GenericData.Record(schema).apply {
+            put("identifikatorer", GenericData.Array(listSchema, listOf(identifikator)))
+        }
+        identhendelse.produce("hei") { record }
+        val result = test.readValue()
+        assertEquals(Aktor(listOf(Identifikator("1234", Type.FOLKEREGISTERIDENT, true))), result)
+
+    }
+
 
     @Test
     fun `personopplysninger joines i rekkefølge - skjerming, pdl, norg`() = testApp { mocks ->
@@ -131,7 +291,10 @@ class PersonopplysningerTest {
             .hasNumberOfRecords(3)
             .hasNumberOfRecordsForKey(STRENGT_FORTROLIG_UTLAND_PERSON, 3)
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 0) { ikkeSkjermet }
-            .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 1) { ikkeSkjermet + gtKommune + strengtFortroligUtland + navn }
+            .hasValueEquals(
+                STRENGT_FORTROLIG_UTLAND_PERSON,
+                1
+            ) { ikkeSkjermet + gtKommune + strengtFortroligUtland + navn }
             .hasValueEquals(STRENGT_FORTROLIG_UTLAND_PERSON, 2) {
                 ikkeSkjermet + gtKommune + strengtFortroligUtland + navn + enhet
             }

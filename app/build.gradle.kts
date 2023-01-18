@@ -17,6 +17,7 @@ dependencies {
     implementation("com.github.navikt.aap-libs:ktor-auth-azuread:$aapLibsVersion")
     implementation("com.github.navikt.aap-libs:kafka:$aapLibsVersion")
     implementation("com.github.navikt.aap-libs:ktor-utils:$aapLibsVersion")
+    implementation("com.github.navikt.aap-libs:kafka-avroserde:$aapLibsVersion")
 
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
@@ -43,7 +44,13 @@ dependencies {
 repositories {
     mavenCentral()
     maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-//    maven("https://packages.confluent.io/maven/") // transitive avro dependency
+    maven("https://packages.confluent.io/maven/") // transitive avro dependency
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("org.apache.kafka:kafka-clients:3.3.1")
+    }
 }
 
 tasks {
