@@ -4,7 +4,6 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.test.KafkaStreamsMock
-import no.nav.aap.kafka.streams.test.readAndAssert
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import personopplysninger.domain.PersonopplysningerDto
@@ -16,21 +15,20 @@ import kotlin.test.assertNotNull
 internal class IntegrationTest {
 
     @Test
-    //@Disabled("Kun for debug i miljø med ident mot PDL")
+    @Disabled("Kun for debug i miljø med ident mot PDL")
     fun `test integration`() = testApp { mocks ->
         val skjermingInput = mocks.kafka.testTopic(Topics.skjerming)
         val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
 
         val ident = ""
-        skjermingInput.produce(ident){ SkjermetDto(LocalDateTime.now().minusDays(30), null)}
-        personopplysningerInput.produce(ident){ PersonopplysningerDto()}
+        skjermingInput.produce(ident) { SkjermetDto(LocalDateTime.now().minusDays(30), null) }
+        personopplysningerInput.produce(ident) { PersonopplysningerDto() }
 
         personopplysningerInput.assertThat()
             .hasLastValueMatching { value ->
                 assertNotNull(value)
             }
     }
-
 
     private fun testApp(test: suspend ApplicationTestBuilder.(mocks: MockEnvironment) -> Unit) =
         MockEnvironment().use { mocks ->

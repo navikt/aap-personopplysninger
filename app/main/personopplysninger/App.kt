@@ -59,7 +59,10 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
             // it.skjermingStream() // reiniti personopplysning med skjermign
             it.produce(Tables.skjerming) // lager ktable
         }
-    streams.indentHendelseStream()
+
+    streams.consume(Topics.søkere).produce(Tables.søkere)
+
+    streams.aktørStream()
     streams.søknadStream()
     streams.personopplysningStream(skjermedeTable, pdlClient, norgClient)
 //    streams.geografiskTilknytningStream()
