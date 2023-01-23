@@ -17,6 +17,7 @@ jobs:
         name:
           - topic-personopplysninger.yml
           - topic-personopplysninger-intern.yml
+          - topic-endrede-personidenter.yml
         cluster:
           - dev-gcp
           - prod-gcp
