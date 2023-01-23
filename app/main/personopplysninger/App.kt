@@ -60,7 +60,9 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
             it.produce(Tables.skjerming) // lager ktable
         }
 
-    streams.consume(Topics.søkere).produce(Tables.søkere)
+    streams.consume(Topics.søkere)
+        .mapValues { _ -> "".toByteArray() }
+        .produce(Tables.søkere)
 
     streams.aktørStream()
     streams.søknadStream()

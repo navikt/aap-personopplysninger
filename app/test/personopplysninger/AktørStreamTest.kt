@@ -9,18 +9,16 @@ import personopplysninger.aktor.TypeDto
 import personopplysninger.kafka.Tables
 import personopplysninger.kafka.Topics
 
-class IdentHendelseStreamTest {
+class AktørStreamTest {
 
     @Test
     fun `når en søker bytter personident oppdateres søker`() = testApp { mocks ->
         val aktørV2 = mocks.kafka.testTopic(Topics.aktørV2)
         val søkere = mocks.kafka.testTopic(Topics.søkere)
+        val endredePersonidenter = mocks.kafka.testTopic(Topics.endredePersonidenter)
 
         søkere.produce("123") { "hello".toByteArray() }
 
-        søkere.assertThat()
-            .hasNumberOfRecordsForKey("123", 0)
-            .hasNumberOfRecordsForKey("456", 0)
 
         val store = mocks.kafka.getStore<ByteArray>(Tables.søkere.stateStoreName)
         assertNotNull(store["123"])
@@ -35,13 +33,8 @@ class IdentHendelseStreamTest {
                 )
             )
         }
-
-        søkere.assertThat()
-            .hasNumberOfRecordsForKey("123", 1)
-            .hasValuesForPredicate("123", 1) { it ==  null }
-            .hasNumberOfRecordsForKey("456", 1)
-            .hasValueMatching("456") {
-                "hello".toByteArray()
-            }
+        endredePersonidenter.assertThat()
+            .hasValuesForPredicate("123"){ it == "456" }
+            .hasNumberOfRecords(1)
     }
 }
