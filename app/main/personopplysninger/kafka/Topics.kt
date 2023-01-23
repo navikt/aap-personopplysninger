@@ -3,6 +3,7 @@ package personopplysninger.kafka
 import no.nav.aap.kafka.serde.json.JsonSerde
 import no.nav.aap.kafka.streams.Topic
 import org.apache.kafka.common.serialization.Serdes.ByteArraySerde
+import org.apache.kafka.common.serialization.Serdes.StringSerde
 import personopplysninger.aktor.AktorDto
 import personopplysninger.domain.PersonopplysningerDto
 import personopplysninger.domain.PersonopplysningerInternDto
@@ -19,4 +20,5 @@ object Topics {
     val geografiskTilknytning = Topic("aapen-pdl-geografisktilknytning-v1", JsonSerde.jackson<GtMedIdenter>())
 
     val aktørV2: Topic<AktorDto> = Topic("pdl.aktor-v2", AktorAvroSerde())
+    val endredePersonidenter = Topic("aap.endrede-personidenter.v1", StringSerde())
 }

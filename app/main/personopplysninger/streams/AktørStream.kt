@@ -36,18 +36,15 @@ internal fun StreamsBuilder.aktørStream() {
 
 internal fun oppdaterSøkersPersonident(): Branched<String, AktørAndSøkere> =
     Branched.withConsumer { kstream ->
-        kstream.flatMap { _, (aktør, søkere) ->
-            val gjeldendeFolkeregisterIdentifikator = aktør.identifikatorer
+        kstream.map { _, (aktør, søkere) ->
+            val endretPersonident = aktør.identifikatorer
                 .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
                 .single(IdentifikatorDto::gjeldende)
                 .idnummer
 
-            val søker = søkere.single()
-            val søkerMedNyIdentifikator = KeyValue(gjeldendeFolkeregisterIdentifikator, søker.value)
-            val tombstoneGammelIdentifikator = KeyValue(søker.key, null)
-
-            listOf(søkerMedNyIdentifikator, tombstoneGammelIdentifikator)
-        }.produce(Topics.søkere, "oppdater-ident-for-soker", true)
+            val forrigePersonident = søkere.single().key
+            KeyValue(forrigePersonident, endretPersonident)
+        }.produce(Topics.endredePersonidenter, "endrer-personident", true)
     }
 
 internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(): Branched<String, AktørAndSøkere> =
@@ -90,7 +87,7 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
 
         val søkere = folkeregIdenter.mapNotNull { ident ->
             store[ident]?.let {
-                Søker(ident, it.value())
+                Søker(ident)
             }
         }
 
@@ -101,7 +98,7 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
 }
 
 internal data class AktørAndSøkere(val aktør: AktorDto, val søkere: List<Søker>)
-internal data class Søker(val key: String, val value: ByteArray)
+internal data class Søker(val key: String)
 
 internal fun KStream<String, AktorDto>.lookupPersonidenter(): KStream<String, AktørAndSøkere> =
     processValues(
