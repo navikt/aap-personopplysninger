@@ -12,6 +12,7 @@ import org.apache.kafka.streams.kstream.KTable
 import org.slf4j.LoggerFactory
 import personopplysninger.domain.Personopplysninger
 import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.domain.PersonopplysningerInternDto
 import personopplysninger.graphql.PdlGraphQLClient
 import personopplysninger.kafka.Topics
 import personopplysninger.rest.ArbeidsfordelingDtoRequest
@@ -24,27 +25,28 @@ internal fun StreamsBuilder.personopplysningStream(
     pdlClient: PdlGraphQLClient,
     norgClient: NorgClient,
 ) {
-    consume(Topics.personopplysninger, true)
+    consume(Topics.personopplysningerIntern, true)
         .filterNotNull("skip-personopplysning-tombstone")
         .split(named("split"))
         .branch({ _, dto -> dto.kanSetteSkjerming() }, skjermingBranch(skjermede))
         .branch({ _, dto -> dto.kanSettePdlopplysninger() }, pdlBranch(pdlClient))
         .branch({ _, dto -> dto.kanSetteEnhet() }, norgBranch(norgClient))
+        .defaultBranch(ferdigBranch())
 }
 
-internal fun skjermingBranch(skjermede: KTable<String, SkjermetDto>): Branched<String, PersonopplysningerDto> =
+internal fun skjermingBranch(skjermede: KTable<String, SkjermetDto>): Branched<String, PersonopplysningerInternDto> =
     Branched.withConsumer { stream ->
         stream
-            .leftJoin(Topics.personopplysninger with Topics.skjerming, skjermede)
+            .leftJoin(Topics.personopplysningerIntern with Topics.skjerming, skjermede)
             .mapValues { (personopplysningerDto, skjermingDto) ->
                 val personopplysninger = Personopplysninger.restore(personopplysningerDto)
                 personopplysninger.settSkjerming(skjermingDto?.fom(), skjermingDto?.tom())
                 personopplysninger.toDto()
             }
-            .produce(Topics.personopplysninger, "produced-personopplysning-skjermet", true)
+            .produce(Topics.personopplysningerIntern, "produced-personopplysning-skjermet", true)
     }
 
-internal fun pdlBranch(pdlClient: PdlGraphQLClient): Branched<String, PersonopplysningerDto> =
+internal fun pdlBranch(pdlClient: PdlGraphQLClient): Branched<String, PersonopplysningerInternDto> =
     Branched.withConsumer { stream ->
         stream
             .mapValues { personident, dto ->
@@ -61,18 +63,32 @@ internal fun pdlBranch(pdlClient: PdlGraphQLClient): Branched<String, Personoppl
                 personopplysninger.toDto()
             }
             .filterNotNull("filter-not-null-personopplysning-pdl-error")
-            .produce(Topics.personopplysninger, "produced-personopplysning-pdl", true)
+            .produce(Topics.personopplysningerIntern, "produced-personopplysning-pdl", true)
     }
 
-internal fun norgBranch(norgClient: NorgClient): Branched<String, PersonopplysningerDto> =
+internal fun norgBranch(norgClient: NorgClient): Branched<String, PersonopplysningerInternDto> =
     Branched.withConsumer { stream ->
         stream
-            .mapValues { dto ->
+            .mapValues { personident, dto ->
                 val request = ArbeidsfordelingDtoRequest.create(dto)
                 val response = runBlocking { norgClient.hentArbeidsfordeling(request) }.singleOrNull()
+                if (response == null) {
+                    secureLog.warn("Tom enhetsliste fra norg på $personident (${dto})")
+                    return@mapValues null
+                }
                 val personopplysninger = Personopplysninger.restore(dto)
                 personopplysninger.settEnhet(response?.enhetNr ?: "UKJENT")
                 personopplysninger.toDto()
             }
-            .produce(Topics.personopplysninger, "produced-personopplysning-enhet", true)
+            .filterNotNull("filter-not-null-personopplysning-norg-liste")
+            .produce(Topics.personopplysningerIntern, "produced-personopplysning-enhet", true)
+    }
+
+internal fun ferdigBranch(): Branched<String, PersonopplysningerInternDto> =
+    Branched.withConsumer{ stream ->
+        stream
+            .mapValues { _, value ->
+                value.mapTilPersonopplysningerDto()
+            }
+            .produce(Topics.personopplysninger, "produced-personopplysninger-finished", true)
     }

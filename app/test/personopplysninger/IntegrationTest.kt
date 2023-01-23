@@ -7,6 +7,7 @@ import no.nav.aap.kafka.streams.test.KafkaStreamsMock
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.domain.PersonopplysningerInternDto
 import personopplysninger.kafka.Topics
 import personopplysninger.streams.SkjermetDto
 import java.time.LocalDateTime
@@ -18,11 +19,11 @@ internal class IntegrationTest {
     @Disabled("Kun for debug i miljø med ident mot PDL")
     fun `test integration`() = testApp { mocks ->
         val skjermingInput = mocks.kafka.testTopic(Topics.skjerming)
-        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysninger)
+        val personopplysningerInput = mocks.kafka.testTopic(Topics.personopplysningerIntern)
 
         val ident = ""
         skjermingInput.produce(ident) { SkjermetDto(LocalDateTime.now().minusDays(30), null) }
-        personopplysningerInput.produce(ident) { PersonopplysningerDto() }
+        personopplysningerInput.produce(ident) { PersonopplysningerInternDto() }
 
         personopplysningerInput.assertThat()
             .hasLastValueMatching { value ->

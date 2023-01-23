@@ -12,7 +12,7 @@ fun KStream<String, SkjermetDto>.skjermingStream() =
         val personopplysninger = Personopplysninger.opprettForOppdatering()
         personopplysninger.settSkjerming(skjerming.fom(), skjerming.tom())
         personopplysninger.toDto()
-    }.produce(Topics.personopplysninger, "reinitialize-personopplysninger-for-skjerming", true)
+    }.produce(Topics.personopplysningerIntern, "reinitialize-personopplysninger-for-skjerming", true)
 
 data class SkjermetDto(
     val skjermetFra: LocalDateTime,

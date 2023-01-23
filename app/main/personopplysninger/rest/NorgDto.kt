@@ -1,6 +1,6 @@
 package personopplysninger.rest
 
-import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.domain.PersonopplysningerInternDto
 
 data class ArbeidsfordelingDtoResponse(
     val enhetNr: String,
@@ -18,7 +18,7 @@ data class ArbeidsfordelingDtoRequest(
     }
 
     companion object {
-        fun create(personDto: PersonopplysningerDto) = ArbeidsfordelingDtoRequest(
+        fun create(personDto: PersonopplysningerInternDto) = ArbeidsfordelingDtoRequest(
             geografiskOmraade = personDto.geografiskTilknytning ?: error("GT skal ikke være null her"),
             skjermet = personDto.skjerming?.erSkjermet ?: error("skjermet skal ikke være null her"),
             diskresjonskode = when (personDto.adressebeskyttelse) {

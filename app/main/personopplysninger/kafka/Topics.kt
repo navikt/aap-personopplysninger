@@ -5,15 +5,16 @@ import no.nav.aap.kafka.streams.Topic
 import org.apache.kafka.common.serialization.Serdes.ByteArraySerde
 import personopplysninger.aktor.AktorDto
 import personopplysninger.domain.PersonopplysningerDto
+import personopplysninger.domain.PersonopplysningerInternDto
 import personopplysninger.streams.GtMedIdenter
 import personopplysninger.streams.SkjermetDto
-import personopplysninger.streams.SøknadDto
 
 object Topics {
     //    val leesah = Topic("aapen-person-pdl-leesah-v1", AvroSerde.generic())
     val skjerming = Topic("nom.skjermede-personer-v1", JsonSerde.jackson<SkjermetDto>())
     val personopplysninger = Topic("aap.personopplysninger.v1", JsonSerde.jackson<PersonopplysningerDto>())
-    val søknad = Topic("aap.soknad-sendt.v1", JsonSerde.jackson<SøknadDto>())
+    val personopplysningerIntern = Topic("aap.personopplysninger-intern.v1", JsonSerde.jackson<PersonopplysningerInternDto>())
+    val søknad = Topic("aap.soknad-sendt.v1", ByteArraySerde())
     val søkere = Topic("aap.sokere.v1", ByteArraySerde())
     val geografiskTilknytning = Topic("aapen-pdl-geografisktilknytning-v1", JsonSerde.jackson<GtMedIdenter>())
 

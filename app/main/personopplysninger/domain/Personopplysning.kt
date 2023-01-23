@@ -38,7 +38,7 @@ class Personopplysninger private constructor(
     companion object {
         fun opprettForOppdatering() = Personopplysninger()
 
-        fun restore(dto: PersonopplysningerDto) = Personopplysninger(
+        fun restore(dto: PersonopplysningerInternDto) = Personopplysninger(
             norgEnhetId = dto.norgEnhetId,
             adresseeskyttelse = dto.adressebeskyttelse,
             geografiskTilknytning = dto.geografiskTilknytning,
@@ -47,7 +47,7 @@ class Personopplysninger private constructor(
         )
     }
 
-    fun toDto() = PersonopplysningerDto(
+    fun toDto() = PersonopplysningerInternDto(
         norgEnhetId = norgEnhetId,
         adressebeskyttelse = adresseeskyttelse,
         geografiskTilknytning = geografiskTilknytning,
@@ -57,6 +57,14 @@ class Personopplysninger private constructor(
 }
 
 data class PersonopplysningerDto(
+    val norgEnhetId: String,
+    val adressebeskyttelse: String,
+    val geografiskTilknytning: String,
+    val skjerming: SkjermingDto,
+    val navn: NavnDto,
+)
+
+data class PersonopplysningerInternDto(
     val norgEnhetId: String? = null,
     val adressebeskyttelse: String? = null,
     val geografiskTilknytning: String? = null,
@@ -66,6 +74,13 @@ data class PersonopplysningerDto(
     fun kanSetteSkjerming(): Boolean = skjerming == null
     fun kanSettePdlopplysninger(): Boolean = adressebeskyttelse == null || geografiskTilknytning == null || navn == null
     fun kanSetteEnhet(): Boolean = !kanSetteSkjerming() && !kanSettePdlopplysninger() && norgEnhetId == null
+    fun mapTilPersonopplysningerDto(): PersonopplysningerDto = PersonopplysningerDto(
+        norgEnhetId = requireNotNull(norgEnhetId) { "norgEnhetId er null i mapper" },
+        adressebeskyttelse = requireNotNull(adressebeskyttelse) { "adressebeskyttelse er null i mapper" },
+        geografiskTilknytning = requireNotNull(geografiskTilknytning) { "geografiskTilknytning er null i mapper" },
+        skjerming = requireNotNull(skjerming) { "skjerming er null i mapper" },
+        navn = requireNotNull(navn) { "navn er null i mapper" }
+    )
 }
 
 data class SkjermingDto(

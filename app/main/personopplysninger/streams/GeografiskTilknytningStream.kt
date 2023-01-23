@@ -20,7 +20,7 @@ internal fun StreamsBuilder.geografiskTilknytningStream() =
             personopplysninger.settGeografiskTilknytning(gt.geografiskTilknytning())
             KeyValue.pair(ident, personopplysninger.toDto())
         }
-    }.produce(Topics.personopplysninger, "reinitialize-personopplysninger-for-gt")
+    }.produce(Topics.personopplysningerIntern, "reinitialize-personopplysninger-for-gt")
 
 data class GtMedIdenter(
     val identer: List<String>,
