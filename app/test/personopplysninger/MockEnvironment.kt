@@ -28,6 +28,17 @@ internal class MockEnvironment : AutoCloseable {
     private val oauth = embeddedServer(Netty, port = 0, module = Application::azureAdMock).apply { start() }
     val kafka = KafkaStreamsMock()
 
+    // Setter properties som brukes før ktor blir involvert
+    // Kotlin sin "object" blir instansiert før ktor, og AktorAvroSerde bruker System.getenv/System.getProperty
+    init {
+        System.setProperty("KAFKA_SCHEMA_REGISTRY", "mock://schema-reg.test")
+        System.setProperty("KAFKA_SCHEMA_REGISTRY_USER", "")
+        System.setProperty("KAFKA_SCHEMA_REGISTRY_PASSWORD", "")
+        System.setProperty("KAFKA_TRUSTSTORE_PATH", "")
+        System.setProperty("KAFKA_KEYSTORE_PATH", "")
+        System.setProperty("KAFKA_CREDSTORE_PASSWORD", "")
+    }
+
     val environmentVariables = MapApplicationConfig(
         "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to "http://localhost:${oauth.port}/token",
         "AZURE_APP_CLIENT_ID" to "test",
@@ -41,6 +52,9 @@ internal class MockEnvironment : AutoCloseable {
         "KAFKA_KEYSTORE_PATH" to "",
         "KAFKA_CREDSTORE_PASSWORD" to "",
         "KAFKA_CLIENT_ID" to "personopplysninger",
+        "KAFKA_SCHEMA_REGISTRY" to "mock://schema-reg.test",
+        "KAFKA_SCHEMA_REGISTRY_USER" to "",
+        "KAFKA_SCHEMA_REGISTRY_PASSWORD" to "",
     )
 
     companion object {

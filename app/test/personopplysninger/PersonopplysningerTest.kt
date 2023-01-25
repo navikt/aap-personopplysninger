@@ -17,14 +17,7 @@ import personopplysninger.domain.PersonopplysningerDto
 import personopplysninger.domain.PersonopplysningerInternDto
 import personopplysninger.domain.SkjermingDto
 import personopplysninger.kafka.Topics
-import personopplysninger.mocks.BYDEL_PERSON
-import personopplysninger.mocks.FORTROLIG_PERSON
-import personopplysninger.mocks.KOMMUNE_PERSON
-import personopplysninger.mocks.PERSON_UTEN_GRADERING
-import personopplysninger.mocks.STRENGT_FORTROLIG_PERSON
-import personopplysninger.mocks.STRENGT_FORTROLIG_UTLAND_PERSON
-import personopplysninger.mocks.SVENSK_PERSON
-import personopplysninger.mocks.UGRADERT_PERSON
+import personopplysninger.mocks.*
 import personopplysninger.streams.SkjermetDto
 import java.time.LocalDate
 import java.time.LocalDateTime

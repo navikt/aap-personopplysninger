@@ -1,5 +1,7 @@
 package personopplysninger.kafka
 
+import no.nav.aap.kafka.SslConfig
+import no.nav.aap.kafka.schemaregistry.SchemaRegistryConfig
 import no.nav.aap.kafka.serde.avro.AvroSerde
 import no.nav.aap.kafka.serde.avro.enum
 import no.nav.aap.kafka.serde.avro.string
@@ -13,10 +15,31 @@ import org.intellij.lang.annotations.Language
 import personopplysninger.aktor.AktorDto
 import personopplysninger.aktor.IdentifikatorDto
 import personopplysninger.aktor.TypeDto
+import java.util.*
 
 class AktorAvroSerde : Serde<AktorDto> {
+    private fun getRequiredEnv(env: String) = requireNotNull(
+        System.getenv(env) ?: System.getProperty(env)
+    ) { "Fant ikke påkrevd env: $env" }
+
     private val inner = AvroSerde.generic().apply {
-        configure(mapOf("schema.registry.url" to "mock://lol.com"), false)
+        val schemaRegistry: Properties = SchemaRegistryConfig(
+            url = getRequiredEnv("KAFKA_SCHEMA_REGISTRY"),
+            user = getRequiredEnv("KAFKA_SCHEMA_REGISTRY_USER"),
+            password = getRequiredEnv("KAFKA_SCHEMA_REGISTRY_PASSWORD"),
+        ).properties()
+
+
+        val ssl: Properties = SslConfig(
+            truststorePath = getRequiredEnv("KAFKA_TRUSTSTORE_PATH"),
+            keystorePath = getRequiredEnv("KAFKA_KEYSTORE_PATH"),
+            credstorePsw = getRequiredEnv("KAFKA_CREDSTORE_PASSWORD")
+        ).properties()
+
+        val avroProperties = schemaRegistry + ssl
+        val avroConfig = avroProperties.map { it.key.toString() to it.value.toString() }
+
+        configure(avroConfig.toMap(), false)
     }
 
     override fun serializer(): Serializer<AktorDto> = AktorAvroSerializer(inner.serializer())
