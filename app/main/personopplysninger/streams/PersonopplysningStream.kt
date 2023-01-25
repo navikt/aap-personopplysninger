@@ -11,7 +11,6 @@ import org.apache.kafka.streams.kstream.Branched
 import org.apache.kafka.streams.kstream.KTable
 import org.slf4j.LoggerFactory
 import personopplysninger.domain.Personopplysninger
-import personopplysninger.domain.PersonopplysningerDto
 import personopplysninger.domain.PersonopplysningerInternDto
 import personopplysninger.graphql.PdlGraphQLClient
 import personopplysninger.kafka.Topics
@@ -58,7 +57,7 @@ internal fun pdlBranch(pdlClient: PdlGraphQLClient): Branched<String, Personoppl
                 }
                 personopplysninger.settGeografiskTilknytning(response.geografiskTilknytning())
                 personopplysninger.settAdressebeskyttelse(response.gradering())
-                val navn = requireNotNull(response.data?.hentPerson?.navn?.last()) {"Fant ikke navn i PDL"}
+                val navn = requireNotNull(response.data?.hentPerson?.navn?.last()) { "Fant ikke navn i PDL" }
                 personopplysninger.settNavn(navn.fornavn, navn.mellomnavn, navn.etternavn)
                 personopplysninger.toDto()
             }
@@ -77,7 +76,7 @@ internal fun norgBranch(norgClient: NorgClient): Branched<String, Personopplysni
                     return@mapValues null
                 }
                 val personopplysninger = Personopplysninger.restore(dto)
-                personopplysninger.settEnhet(response?.enhetNr ?: "UKJENT")
+                personopplysninger.settEnhet(response.enhetNr)
                 personopplysninger.toDto()
             }
             .filterNotNull("filter-not-null-personopplysning-norg-liste")
@@ -85,10 +84,8 @@ internal fun norgBranch(norgClient: NorgClient): Branched<String, Personopplysni
     }
 
 internal fun ferdigBranch(): Branched<String, PersonopplysningerInternDto> =
-    Branched.withConsumer{ stream ->
+    Branched.withConsumer { stream ->
         stream
-            .mapValues { _, value ->
-                value.mapTilPersonopplysningerDto()
-            }
+            .mapValues { _, value -> value.mapTilPersonopplysningerDto() }
             .produce(Topics.personopplysninger, "produced-personopplysninger-finished", true)
     }

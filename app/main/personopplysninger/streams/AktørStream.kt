@@ -25,7 +25,7 @@ private val secureLog = LoggerFactory.getLogger("secureLog")
 private val log = LoggerFactory.getLogger("app")
 
 internal fun StreamsBuilder.aktørStream() {
-    consume(Topics.aktørV2)
+    consume(Topics.aktørV2, true)
         .filterNotNull("skip-indenthendelse-tombstone")
         .lookupPersonidenter()
         .split()
@@ -36,6 +36,7 @@ internal fun StreamsBuilder.aktørStream() {
 
 internal fun oppdaterSøkersPersonident(): Branched<String, AktørAndSøkere> =
     Branched.withConsumer { kstream ->
+        secureLog.info("Forsøker å oppdatere søkers personident")
         kstream.map { _, (aktør, søkere) ->
             val endretPersonident = aktør.identifikatorer
                 .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
@@ -49,6 +50,7 @@ internal fun oppdaterSøkersPersonident(): Branched<String, AktørAndSøkere> =
 
 internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(): Branched<String, AktørAndSøkere> =
     Branched.withConsumer { kstream ->
+        secureLog.info("Forsøker å varsle om fler søknader på samme person")
         kstream.peek { _, (aktør, søkere) ->
             val aapSøkere = søkere.map { it.key }
             val folkeregisteridenter = aktør.identifikatorer.filter { it.type == TypeDto.FOLKEREGISTERIDENT }
@@ -80,6 +82,7 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
     }
 
     override fun process(record: FixedKeyRecord<String, AktorDto>) {
+        secureLog.info("Sjekker søkere KTable etter ident")
         val aktør = record.value()
         val folkeregIdenter = aktør.identifikatorer
             .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
@@ -89,6 +92,10 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
             store[ident]?.let {
                 Søker(ident)
             }
+        }
+
+        søkere.forEach {
+            secureLog.info("Fant: ${it.key}")
         }
 
         context.forward(record.withValue(AktørAndSøkere(aktør, søkere)))
