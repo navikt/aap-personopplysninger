@@ -1,3 +1,5 @@
+toggle:
+  settOppAktørStream: "false"
 pdl:
   url: https://pdl-api.prod-fss-pub.nais.io/graphql
   scope: api://prod-fss.pdl.pdl-api/.default

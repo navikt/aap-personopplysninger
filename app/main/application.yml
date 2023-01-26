@@ -1,3 +1,5 @@
+toggle:
+  settOppAktørStream: ${TOGGLE_SETT_OPP_AKTØRSTREAM}
 pdl:
   url: ${PDL_URL}
   scope: ${PDL_SCOPE}

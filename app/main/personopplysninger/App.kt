@@ -40,7 +40,7 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
     kafka.connect(
         config = config.kafka,
         registry = prometheus,
-        topology = topology(pdlClient, norgClient)
+        topology = topology(pdlClient, norgClient, config.toggle.settOppAktørStream)
     )
 
     routing {
@@ -48,7 +48,7 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
     }
 }
 
-internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topology {
+internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient, settOppAktørStream: Boolean): Topology {
     val streams = StreamsBuilder()
 
     val skjermedeTable = streams
@@ -64,7 +64,9 @@ internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient): Topo
         .mapValues { _ -> "".toByteArray() }
         .produce(Tables.søkere)
 
-    streams.aktørStream()
+    if(settOppAktørStream) {
+        streams.aktørStream()
+    }
     streams.søknadStream()
     streams.personopplysningStream(skjermedeTable, pdlClient, norgClient)
 //    streams.geografiskTilknytningStream()

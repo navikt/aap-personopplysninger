@@ -7,8 +7,13 @@ import personopplysninger.graphql.PdlConfig
 
 
 internal data class Config(
+    val toggle: Toggle,
     val pdl: PdlConfig,
     val norg: NorgConfig,
     val azure: AzureConfig,
     val kafka: KStreamsConfig,
+)
+
+internal data class Toggle(
+    val settOppAktørStream: Boolean,
 )
