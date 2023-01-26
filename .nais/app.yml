@@ -53,5 +53,5 @@ spec:
       value: {{pdl.scope}}
     - name: NORG_URL
       value: {{norg.url}}
-    - name: TOGGLE_SETT_OPP_AKTØRSTREAM
+    - name: TOGGLE_SETT_OPP_AKTORSTREAM
       value: "{{toggle.settOppAktørStream}}"

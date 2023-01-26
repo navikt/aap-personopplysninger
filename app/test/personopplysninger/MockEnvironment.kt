@@ -55,7 +55,7 @@ internal class MockEnvironment : AutoCloseable {
         "KAFKA_SCHEMA_REGISTRY" to "mock://schema-reg.test",
         "KAFKA_SCHEMA_REGISTRY_USER" to "",
         "KAFKA_SCHEMA_REGISTRY_PASSWORD" to "",
-        "TOGGLE_SETT_OPP_AKTØRSTREAM" to "true"
+        "TOGGLE_SETT_OPP_AKTORSTREAM" to "true"
     )
 
     companion object {
