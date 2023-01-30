@@ -28,7 +28,6 @@ private val log = LoggerFactory.getLogger("app")
 internal fun StreamsBuilder.aktørStream() {
     consume(Topics.aktørV2, true)
         .filterNotNull("skip-indenthendelse-tombstone")
-        .repartition(Repartitioned.with(Topics.aktørV2.keySerde, Topics.aktørV2.valueSerde).withNumberOfPartitions(12))
         .flatMap { _, value ->
             value.identifikatorer
                 // trenger ikke bytte hvis vi allerede har gjeldende
@@ -37,6 +36,7 @@ internal fun StreamsBuilder.aktørStream() {
                 .associateWith { value }
                 .map { (key, value) -> KeyValue(key, value) }
         }
+        .repartition(Repartitioned.with(Topics.aktørV2.keySerde, Topics.aktørV2.valueSerde).withNumberOfPartitions(12))
         .lookupPersonidenter()
         .split()
         .branch({ _, (_, søkere) -> søkere.size == 1 }, oppdaterSøkersPersonident())
