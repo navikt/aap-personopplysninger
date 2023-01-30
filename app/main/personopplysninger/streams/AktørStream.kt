@@ -87,6 +87,12 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
         val folkeregIdenter = aktør.identifikatorer
             .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
             .map { it.idnummer }
+            .onEach {
+                secureLog.info("Leter etter key '$it'")
+                store.all().use { all -> all.asSequence() }.forEach { each ->
+                    secureLog.info("Matcher på ${each.key} : ${each.key == it}")
+                }
+            }
 
         val søkere = folkeregIdenter.mapNotNull { ident ->
             store[ident]?.let {
