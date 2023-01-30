@@ -8,10 +8,10 @@ import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.Branched
 import org.apache.kafka.streams.kstream.KStream
+import org.apache.kafka.streams.kstream.Repartitioned
 import org.apache.kafka.streams.processor.api.FixedKeyProcessor
 import org.apache.kafka.streams.processor.api.FixedKeyProcessorContext
 import org.apache.kafka.streams.processor.api.FixedKeyRecord
-import org.apache.kafka.streams.state.KeyValueStore
 import org.apache.kafka.streams.state.TimestampedKeyValueStore
 import org.apache.kafka.streams.state.ValueAndTimestamp
 import org.slf4j.LoggerFactory
@@ -28,6 +28,15 @@ private val log = LoggerFactory.getLogger("app")
 internal fun StreamsBuilder.aktørStream() {
     consume(Topics.aktørV2, true)
         .filterNotNull("skip-indenthendelse-tombstone")
+        .repartition(Repartitioned.with(Topics.aktørV2.keySerde, Topics.aktørV2.valueSerde).withNumberOfPartitions(12))
+        .flatMap { _, value ->
+            value.identifikatorer
+                // trenger ikke bytte hvis vi allerede har gjeldende
+                .filter { it.type == TypeDto.FOLKEREGISTERIDENT && !it.gjeldende}
+                .map { it.idnummer }
+                .associateWith { value }
+                .map { (key, value) -> KeyValue(key, value) }
+        }
         .lookupPersonidenter()
         .split()
         .branch({ _, (_, søkere) -> søkere.size == 1 }, oppdaterSøkersPersonident())
@@ -40,14 +49,14 @@ internal fun oppdaterSøkersPersonident(): Branched<String, AktørAndSøkere> =
         kstream
             .peek { _, _ -> secureLog.info("Forsøker å oppdatere søkers personident") }
             .map { _, (aktør, søkere) ->
-            val endretPersonident = aktør.identifikatorer
-                .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
-                .single(IdentifikatorDto::gjeldende)
-                .idnummer
+                val endretPersonident = aktør.identifikatorer
+                    .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
+                    .single(IdentifikatorDto::gjeldende)
+                    .idnummer
 
-            val forrigePersonident = søkere.single().key
-            KeyValue(forrigePersonident, endretPersonident)
-        }.produce(Topics.endredePersonidenter, "endrer-personident", true)
+                val forrigePersonident = søkere.single().key
+                KeyValue(forrigePersonident, endretPersonident)
+            }.produce(Topics.endredePersonidenter, "endrer-personident", true)
     }
 
 internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(): Branched<String, AktørAndSøkere> =
