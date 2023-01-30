@@ -12,6 +12,7 @@ import org.apache.kafka.streams.processor.api.FixedKeyProcessor
 import org.apache.kafka.streams.processor.api.FixedKeyProcessorContext
 import org.apache.kafka.streams.processor.api.FixedKeyRecord
 import org.apache.kafka.streams.state.KeyValueStore
+import org.apache.kafka.streams.state.TimestampedKeyValueStore
 import org.apache.kafka.streams.state.ValueAndTimestamp
 import org.slf4j.LoggerFactory
 import personopplysninger.aktor.AktorDto
@@ -74,7 +75,7 @@ internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(): Branc
 
 internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorDto, AktørAndSøkere> {
     private lateinit var context: FixedKeyProcessorContext<String, AktørAndSøkere>
-    private lateinit var store: KeyValueStore<String, ValueAndTimestamp<ByteArray>>
+    private lateinit var store: TimestampedKeyValueStore<String, ValueAndTimestamp<ByteArray>>
 
     override fun init(ctxt: FixedKeyProcessorContext<String, AktørAndSøkere>) {
         context = ctxt
