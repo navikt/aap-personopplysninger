@@ -100,8 +100,6 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
             .map { it.idnummer }
 
         val søkere = folkeregIdenter.mapNotNull { ident ->
-            val temp = "19469120611"
-            secureLog.info("Leter etter $ident, ${ident.hashCode()} == ${temp.hashCode()} (${store[ident]})")
             store[ident]?.let {
                 Søker(ident)
             }
