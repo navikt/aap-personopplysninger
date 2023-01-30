@@ -84,22 +84,25 @@ internal class PersonidenterLookupTransformer : FixedKeyProcessor<String, AktorD
     override fun process(record: FixedKeyRecord<String, AktorDto>) {
         secureLog.info("Sjekker søkere KTable etter ident")
         val aktør = record.value()
+        val list = store.all().use { it.asSequence().map { k -> k.key }.toSet() }
         val folkeregIdenter = aktør.identifikatorer
             .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
             .map { it.idnummer }
             .onEach {
                 secureLog.info("Leter etter key '$it'")
-                store.all().use { all -> all.asSequence() }.forEach { each ->
-                    secureLog.info("Matcher på ${each.key} : ${each.key == it}")
+                list.forEach { each ->
+                    secureLog.info("Matcher på $each : ${each == it}")
                 }
             }
-
+/*
         val søkere = folkeregIdenter.mapNotNull { ident ->
             store[ident]?.let {
                 Søker(ident)
             }
-        }
 
+        }
+*/
+        val søkere = folkeregIdenter.filter { list.contains(it) }.map { Søker(it) }
         søkere.forEach {
             secureLog.info("Fant: ${it.key}")
         }
