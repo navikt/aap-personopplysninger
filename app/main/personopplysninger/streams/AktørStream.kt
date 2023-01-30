@@ -37,8 +37,9 @@ internal fun StreamsBuilder.aktørStream() {
 
 internal fun oppdaterSøkersPersonident(): Branched<String, AktørAndSøkere> =
     Branched.withConsumer { kstream ->
-        secureLog.info("Forsøker å oppdatere søkers personident")
-        kstream.map { _, (aktør, søkere) ->
+        kstream
+            .peek { _, _ -> secureLog.info("Forsøker å oppdatere søkers personident") }
+            .map { _, (aktør, søkere) ->
             val endretPersonident = aktør.identifikatorer
                 .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
                 .single(IdentifikatorDto::gjeldende)
@@ -51,8 +52,8 @@ internal fun oppdaterSøkersPersonident(): Branched<String, AktørAndSøkere> =
 
 internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(): Branched<String, AktørAndSøkere> =
     Branched.withConsumer { kstream ->
-        secureLog.info("Forsøker å varsle om fler søknader på samme person")
         kstream.peek { _, (aktør, søkere) ->
+            secureLog.info("Forsøker å varsle om fler søknader på samme person")
             val aapSøkere = søkere.map { it.key }
             val folkeregisteridenter = aktør.identifikatorer.filter { it.type == TypeDto.FOLKEREGISTERIDENT }
             val sammenslåtteIdenter = folkeregisteridenter.map { it.idnummer }
