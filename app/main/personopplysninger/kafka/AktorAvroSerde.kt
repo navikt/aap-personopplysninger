@@ -1,10 +1,10 @@
 package personopplysninger.kafka
 
-import no.nav.aap.kafka.SslConfig
 import no.nav.aap.kafka.schemaregistry.SchemaRegistryConfig
 import no.nav.aap.kafka.serde.avro.AvroSerde
 import no.nav.aap.kafka.serde.avro.enum
 import no.nav.aap.kafka.serde.avro.string
+import no.nav.aap.kafka.streams.v2.config.SslConfig
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericData
 import org.apache.avro.generic.GenericRecord

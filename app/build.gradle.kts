@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.0"
-    id("io.ktor.plugin") version "2.2.2"
+    id("io.ktor.plugin") version "2.2.3"
     application
 }
 
@@ -10,12 +10,12 @@ application {
     mainClass.set("personopplysninger.AppKt")
 }
 
-val aapLibsVersion = "3.5.44"
+val aapLibsVersion = "3.5.58"
 val ktorVersion = "2.2.3"
 
 dependencies {
     implementation("com.github.navikt.aap-libs:ktor-auth-azuread:$aapLibsVersion")
-    implementation("com.github.navikt.aap-libs:kafka:$aapLibsVersion")
+    implementation("com.github.navikt.aap-libs:kafka-2:$aapLibsVersion")
     implementation("com.github.navikt.aap-libs:ktor-utils:$aapLibsVersion")
     implementation("com.github.navikt.aap-libs:kafka-avroserde:$aapLibsVersion")
 
@@ -37,7 +37,7 @@ dependencies {
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:7.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("com.github.navikt.aap-libs:kafka-test:$aapLibsVersion")
+    testImplementation("com.github.navikt.aap-libs:kafka-test-2:$aapLibsVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 }
 

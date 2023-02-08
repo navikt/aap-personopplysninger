@@ -7,15 +7,10 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
-import no.nav.aap.kafka.streams.KStreams
-import no.nav.aap.kafka.streams.KafkaStreams
-import no.nav.aap.kafka.streams.extension.consume
-import no.nav.aap.kafka.streams.extension.filterNotNull
-import no.nav.aap.kafka.streams.extension.produce
+import no.nav.aap.kafka.streams.v2.KStreams
+import no.nav.aap.kafka.streams.v2.KafkaStreams
+import no.nav.aap.kafka.streams.v2.topology
 import no.nav.aap.ktor.config.loadConfig
-import org.apache.kafka.streams.StreamsBuilder
-import org.apache.kafka.streams.Topology
-import org.apache.kafka.streams.kstream.Repartitioned
 import personopplysninger.graphql.PdlGraphQLClient
 import personopplysninger.kafka.Tables
 import personopplysninger.kafka.Topics
@@ -28,7 +23,7 @@ fun main() {
     embeddedServer(Netty, port = 8080, module = Application::server).start(wait = true)
 }
 
-fun Application.server(kafka: KStreams = KafkaStreams) {
+fun Application.server(kafka: KStreams = KafkaStreams()) {
     val config = loadConfig<Config>()
     val prometheus = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
@@ -38,9 +33,9 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
     val norgClient = NorgClient(config.norg)
 
     kafka.connect(
+        topology = topology(pdlClient, norgClient, config.toggle.settOppAktørStream),
         config = config.kafka,
         registry = prometheus,
-        topology = topology(pdlClient, norgClient, config.toggle.settOppAktørStream)
     )
 
     routing {
@@ -48,27 +43,20 @@ fun Application.server(kafka: KStreams = KafkaStreams) {
     }
 }
 
-internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient, settOppAktørStream: Boolean): Topology {
-    val streams = StreamsBuilder()
+internal fun topology(pdlClient: PdlGraphQLClient, norgClient: NorgClient, settOppAktørStream: Boolean) =
+    topology {
+        val skjermingKTable = consume(Topics.skjerming)
+            .repartition(12)
+            .produce(Tables.skjerming)
 
-    val skjermedeTable = streams
-        .consume(Topics.skjerming)
-        .filterNotNull("skip-skjerming-tombstone")
-        .repartition(Repartitioned.with(Topics.skjerming.keySerde, Topics.skjerming.valueSerde))
-        .produce(Tables.skjerming)
+        val søkereKTable = consume(Topics.søkere)
+            .map { _ -> "".toByteArray() }
+            .produce(Tables.søkere)
 
-    streams.consume(Topics.søkere)
-        .mapValues { _ -> "".toByteArray() }
-        .produce(Tables.søkere, true)
+        if (settOppAktørStream) {
+            aktørStream(søkereKTable)
+        }
 
-    if (settOppAktørStream) {
-        streams.aktørStream()
+        søknadStream()
+        personopplysningStream(skjermingKTable, pdlClient, norgClient)
     }
-    streams.søknadStream()
-    streams.personopplysningStream(skjermedeTable, pdlClient, norgClient)
-//    streams.geografiskTilknytningStream()
-
-//    streams.leesahStream()
-
-    return streams.build()
-}

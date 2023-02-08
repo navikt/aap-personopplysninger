@@ -6,7 +6,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
-import no.nav.aap.kafka.streams.test.KafkaStreamsMock
+import no.nav.aap.kafka.streams.v2.test.KStreamsMock
 import personopplysninger.mocks.azureAdMock
 import personopplysninger.mocks.norgMock
 import personopplysninger.mocks.pdlApiMock
@@ -26,7 +26,7 @@ internal class MockEnvironment : AutoCloseable {
     private val norg = embeddedServer(Netty, port = 0, module = Application::norgMock).apply { start() }
     private val pdl = embeddedServer(Netty, port = 0, module = Application::pdlApiMock).apply { start() }
     private val oauth = embeddedServer(Netty, port = 0, module = Application::azureAdMock).apply { start() }
-    val kafka = KafkaStreamsMock()
+    val kafka = KStreamsMock()
 
     // Setter properties som brukes før ktor blir involvert
     // Kotlin sin "object" blir instansiert før ktor, og AktorAvroSerde bruker System.getenv/System.getProperty

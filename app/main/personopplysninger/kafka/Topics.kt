@@ -1,7 +1,7 @@
 package personopplysninger.kafka
 
-import no.nav.aap.kafka.serde.json.JsonSerde
-import no.nav.aap.kafka.streams.Topic
+import no.nav.aap.kafka.streams.v2.Topic
+import no.nav.aap.kafka.streams.v2.serde.JsonSerde
 import org.apache.kafka.common.serialization.Serdes.ByteArraySerde
 import org.apache.kafka.common.serialization.Serdes.StringSerde
 import personopplysninger.aktor.AktorDto

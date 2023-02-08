@@ -1,6 +1,6 @@
 package personopplysninger
 
-import no.nav.aap.kafka.streams.KStreamsConfig
+import no.nav.aap.kafka.streams.v2.config.KStreamsConfig
 import no.nav.aap.ktor.client.AzureConfig
 import personopplysninger.rest.NorgConfig
 import personopplysninger.graphql.PdlConfig
