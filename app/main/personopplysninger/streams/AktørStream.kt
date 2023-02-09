@@ -36,14 +36,12 @@ internal fun Topology.aktørStream(søkereKTable: KTable<ByteArray>) {
 internal fun oppdaterSøkersPersonident(stream: MappedKStream<AktørAndSøkere>) {
     stream
         .log { _, _ -> secureLog.info("Forsøker å oppdatere søkers personident") }
-        .mapKeyAndValue { _, (aktør, søkere) ->
-            val endretPersonident = aktør.identifikatorer
+        .rekey { (_, søkere) -> søkere.single().key }
+        .map { (aktør, _) ->
+            aktør.identifikatorer
                 .filter { it.type == TypeDto.FOLKEREGISTERIDENT }
                 .single(IdentifikatorDto::gjeldende)
                 .idnummer
-
-            val forrigePersonident = søkere.single().key
-            KeyValue(forrigePersonident, endretPersonident)
         }
         .produce(Topics.endredePersonidenter, true)
 }
