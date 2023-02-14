@@ -3,6 +3,8 @@ Finner alle nødvendige opplysninger for å kunne rute AAP-oppgaven til riktig k
 
 ![img](logo.jpg)
 
+[Klikk her for å se docs/topology.md](docs/topology.md)
+
 ```mermaid
 sequenceDiagram
     Soknad->>Personopplysning: Ny soknad
