@@ -26,6 +26,10 @@ subgraph Topologi
     %% STATE STORES
     skjerming-state-store-v2[(skjerming-state-store-v2)]
 	sokere-state-store-v2[(sokere-state-store-v2)]
+    
+    %% DATABASES
+    
+    
 
     %% PROCESSOR API JOBS
     

@@ -66,6 +66,5 @@ internal class MockEnvironment : AutoCloseable {
         norg.stop(0L, 0L)
         pdl.stop(0L, 0L)
         oauth.stop(0L, 0L)
-        kafka.close()
     }
 }

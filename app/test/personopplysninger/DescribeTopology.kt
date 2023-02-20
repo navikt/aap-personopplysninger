@@ -1,7 +1,7 @@
 package personopplysninger
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import no.nav.aap.kafka.streams.v2.config.KStreamsConfig
+import no.nav.aap.kafka.streams.v2.config.StreamsConfig
 import no.nav.aap.kafka.streams.v2.test.KStreamsMock
 import no.nav.aap.ktor.client.AzureConfig
 import org.junit.jupiter.api.BeforeEach
@@ -35,7 +35,7 @@ class DescribeTopology {
         val topology = topology(pdlClient, norgClient, true)
 
         val kafka = KStreamsMock()
-        kafka.connect(topology, KStreamsConfig("", ""), SimpleMeterRegistry())
+        kafka.connect(topology, StreamsConfig("", ""), SimpleMeterRegistry())
 
         val mermaid = kafka.visulize().mermaid().generateDiagram()
         File("../docs/topology.mmd").apply { writeText(mermaid) }

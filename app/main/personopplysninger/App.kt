@@ -32,6 +32,8 @@ fun Application.server(kafka: KStreams = KafkaStreams()) {
     val pdlClient = PdlGraphQLClient(config.pdl, config.azure)
     val norgClient = NorgClient(config.norg)
 
+    environment.monitor.subscribe(ApplicationStopping) { kafka.close() }
+
     kafka.connect(
         topology = topology(pdlClient, norgClient, config.toggle.settOppAktørStream),
         config = config.kafka,

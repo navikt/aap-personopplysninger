@@ -1,9 +1,9 @@
 package personopplysninger
 
-import no.nav.aap.kafka.streams.v2.config.KStreamsConfig
+import no.nav.aap.kafka.streams.v2.config.StreamsConfig
 import no.nav.aap.ktor.client.AzureConfig
-import personopplysninger.rest.NorgConfig
 import personopplysninger.graphql.PdlConfig
+import personopplysninger.rest.NorgConfig
 
 
 internal data class Config(
@@ -11,7 +11,7 @@ internal data class Config(
     val pdl: PdlConfig,
     val norg: NorgConfig,
     val azure: AzureConfig,
-    val kafka: KStreamsConfig,
+    val kafka: StreamsConfig,
 )
 
 internal data class Toggle(
