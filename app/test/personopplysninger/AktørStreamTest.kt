@@ -20,7 +20,7 @@ class AktørStreamTest {
         søkere.produce("123") { "hello".toByteArray() }
 
 
-        val store = mocks.kafka.getStore<ByteArray>(Tables.søkere.stateStoreName)
+        val store = mocks.kafka.getStore(Tables.søkere)
         assertNotNull(store["123"])
         assertNull(store["456"])
 

@@ -5,11 +5,11 @@ import no.nav.aap.kafka.serde.avro.AvroSerde
 import no.nav.aap.kafka.serde.avro.enum
 import no.nav.aap.kafka.serde.avro.string
 import no.nav.aap.kafka.streams.v2.config.SslConfig
+import no.nav.aap.kafka.streams.v2.serde.StreamSerde
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericData
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.common.serialization.Deserializer
-import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serializer
 import org.intellij.lang.annotations.Language
 import personopplysninger.aktor.AktorDto
@@ -17,7 +17,7 @@ import personopplysninger.aktor.IdentifikatorDto
 import personopplysninger.aktor.TypeDto
 import java.util.*
 
-class AktorAvroSerde : Serde<AktorDto> {
+class AktorAvroSerde : StreamSerde<AktorDto> {
     private fun getRequiredEnv(env: String) = requireNotNull(
         System.getenv(env) ?: System.getProperty(env)
     ) { "Fant ikke påkrevd env: $env" }

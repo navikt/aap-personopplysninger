@@ -35,7 +35,7 @@ internal fun Topology.aktørStream(søkereKTable: KTable<ByteArray>) {
 
 internal fun oppdaterSøkersPersonident(stream: MappedKStream<AktørAndSøkere>) {
     stream
-        .log { _, _ -> secureLog.info("Forsøker å oppdatere søkers personident") }
+        .secureLog { _ -> info("Forsøker å oppdatere søkers personident") }
         .rekey { (_, søkere) -> søkere.single().key }
         .map { (aktør, _) ->
             aktør.identifikatorer
@@ -43,12 +43,12 @@ internal fun oppdaterSøkersPersonident(stream: MappedKStream<AktørAndSøkere>)
                 .single(IdentifikatorDto::gjeldende)
                 .idnummer
         }
-        .produce(Topics.endredePersonidenter, true)
+        .produce(Topics.endredePersonidenter)
 }
 
 internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(stream: MappedKStream<AktørAndSøkere>) {
-    stream.log { _, (aktør, søkere) ->
-        secureLog.info("Forsøker å varsle om fler søknader på samme person")
+    stream.secureLog {(aktør, søkere) ->
+        info("Forsøker å varsle om fler søknader på samme person")
         val aapSøkere = søkere.map { it.key }
         val folkeregisteridenter = aktør.identifikatorer.filter { it.type == TypeDto.FOLKEREGISTERIDENT }
         val sammenslåtteIdenter = folkeregisteridenter.map { it.idnummer }
@@ -56,7 +56,7 @@ internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(stream: 
 
         val referanse = UUID.randomUUID().toString()
         log.error("Oppdaget merge/splitt av personidenter. Log-referanse: $referanse")
-        secureLog.error(
+        error(
             """
                 Mottok melding fra ${Topics.aktørV2} om sammenslåing av personidenter
                 Registrerte søkere i AAP: $aapSøkere
