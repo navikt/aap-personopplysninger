@@ -22,7 +22,7 @@ class AktørStreamTest {
 
         val store = mocks.kafka.getStore(Tables.søkere)
         assertNotNull(store["123"])
-        assertNull(store["456"])
+        assertNull(store.get("456"))
 
         aktørV2.produce("ABC") {
             AktorDto(
