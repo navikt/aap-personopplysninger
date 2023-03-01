@@ -16,7 +16,7 @@ import java.net.URL
 
 class DescribeTopology {
     @BeforeEach
-    fun setup() {
+    fun setupForSchemaRegTopics() {
         System.setProperty("KAFKA_SCHEMA_REGISTRY", "mock://schema-reg.test")
         System.setProperty("KAFKA_SCHEMA_REGISTRY_USER", "")
         System.setProperty("KAFKA_SCHEMA_REGISTRY_PASSWORD", "")
@@ -39,12 +39,5 @@ class DescribeTopology {
 
         val mermaid = kafka.visulize().mermaid().generateDiagram()
         File("../docs/topology.mmd").apply { writeText(mermaid) }
-        File("../docs/topology.md").apply { writeText(markdown(mermaid)) }
     }
 }
-
-private fun markdown(mermaid: String) = """
-```mermaid
-$mermaid
-```
-"""

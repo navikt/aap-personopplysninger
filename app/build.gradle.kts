@@ -2,14 +2,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.10"
-    id("io.ktor.plugin") version "2.2.3"
+    id("io.ktor.plugin") version "2.2.4"
 }
 
 application {
     mainClass.set("personopplysninger.AppKt")
 }
 
-val aapLibsVersion = "3.6.9"
+val aapLibsVersion = "3.6.20"
 val ktorVersion = "2.2.4"
 
 dependencies {
