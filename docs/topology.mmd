@@ -30,7 +30,8 @@ subgraph Topologi
     
 
     %% PROCESSOR API JOBS
-    
+    nom.skjermede-personer-v1-to-table((nom.skjermede-personer-v1-to-table))
+	aap.sokere.v1-to-table((aap.sokere.v1-to-table))
     
     %% JOIN STREAMS
     aap.personopplysninger-intern.v1 --> aap.personopplysninger-intern.v1-left-join-nom.skjermede-personer-v1
@@ -42,13 +43,14 @@ subgraph Topologi
 	aap.sokere.v1 --> sokere-state-store-v2
 
     %% JOB STREAMS
-    
+    nom.skjermede-personer-v1-to-table --> skjerming-state-store-v2
+	aap.sokere.v1-to-table --> sokere-state-store-v2
     
     %% BRANCH STREAMS
-    aap.personopplysninger-intern.v1 --> aap.personopplysninger.v1
+    aap.personopplysninger-intern.v1 --> aap.personopplysninger-intern.v1
 	aap.personopplysninger-intern.v1 --> aap.personopplysninger-intern.v1
 	aap.personopplysninger-intern.v1 --> aap.personopplysninger-intern.v1
-	aap.personopplysninger-intern.v1 --> aap.personopplysninger-intern.v1
+	aap.personopplysninger-intern.v1 --> aap.personopplysninger.v1
 
     %% REPARTITION STREAMS
     
@@ -83,4 +85,5 @@ style pdl.aktor-v2 fill:#c233b4, stroke:#2a204a, stroke-width:2px, color:#2a204a
 style aap.soknad-sendt.v1 fill:#c233b4, stroke:#2a204a, stroke-width:2px, color:#2a204a
 style skjerming-state-store-v2 fill:#78369f, stroke:#2a204a, stroke-width:2px, color:#2a204a
 style sokere-state-store-v2 fill:#78369f, stroke:#2a204a, stroke-width:2px, color:#2a204a
-
+style nom.skjermede-personer-v1-to-table fill:#78369f, stroke:#2a204a, stroke-width:2px, color:#2a204a
+style aap.sokere.v1-to-table fill:#78369f, stroke:#2a204a, stroke-width:2px, color:#2a204a
