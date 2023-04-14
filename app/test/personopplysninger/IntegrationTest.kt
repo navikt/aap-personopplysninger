@@ -3,7 +3,7 @@ package personopplysninger
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
-import no.nav.aap.kafka.streams.v2.test.KStreamsMock
+import no.nav.aap.kafka.streams.v2.test.StreamsMock
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import personopplysninger.domain.PersonopplysningerInternDto
@@ -42,7 +42,7 @@ internal class IntegrationTest {
         }
 
     private class MockEnvironment : AutoCloseable {
-        val kafka = KStreamsMock()
+        val kafka = StreamsMock()
 
         override fun close() {
             kafka.close()

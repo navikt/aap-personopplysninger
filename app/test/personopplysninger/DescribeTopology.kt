@@ -2,7 +2,7 @@ package personopplysninger
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import no.nav.aap.kafka.streams.v2.config.StreamsConfig
-import no.nav.aap.kafka.streams.v2.test.KStreamsMock
+import no.nav.aap.kafka.streams.v2.test.StreamsMock
 import no.nav.aap.ktor.client.AzureConfig
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,7 +34,7 @@ class DescribeTopology {
         val norgClient = NorgClient(NorgConfig(URL("http://norg.io")))
         val topology = topology(pdlClient, norgClient, true)
 
-        val kafka = KStreamsMock()
+        val kafka = StreamsMock()
         kafka.connect(topology, StreamsConfig("", ""), SimpleMeterRegistry())
 
         val mermaid = kafka.visulize().mermaid().generateDiagram()

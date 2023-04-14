@@ -5,7 +5,7 @@ import no.nav.aap.kafka.streams.v2.KeyValue
 import no.nav.aap.kafka.streams.v2.Topology
 import no.nav.aap.kafka.streams.v2.processor.ProcessorMetadata
 import no.nav.aap.kafka.streams.v2.processor.state.StateProcessor
-import no.nav.aap.kafka.streams.v2.stream.MappedKStream
+import no.nav.aap.kafka.streams.v2.stream.MappedStream
 import org.apache.kafka.streams.state.TimestampedKeyValueStore
 import org.slf4j.LoggerFactory
 import personopplysninger.aktor.AktorDto
@@ -18,7 +18,7 @@ private val secureLog = LoggerFactory.getLogger("secureLog")
 private val log = LoggerFactory.getLogger("app")
 
 internal fun Topology.aktørStream(søkereKTable: KTable<ByteArray>) {
-    consume(Topics.aktørV2, true)
+    consume(Topics.aktørV2)
         .flatMapKeyAndValuePreserveType { _, value ->
             value.identifikatorer
                 // trenger ikke bytte hvis vi allerede har gjeldende
@@ -33,7 +33,7 @@ internal fun Topology.aktørStream(søkereKTable: KTable<ByteArray>) {
         .branch({ (_, søkere) -> søkere.size > 1 }, ::varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer)
 }
 
-internal fun oppdaterSøkersPersonident(stream: MappedKStream<AktørAndSøkere>) {
+internal fun oppdaterSøkersPersonident(stream: MappedStream<AktørAndSøkere>) {
     stream
         .secureLog { _ -> info("Forsøker å oppdatere søkers personident") }
         .rekey { (_, søkere) -> søkere.single().key }
@@ -46,7 +46,7 @@ internal fun oppdaterSøkersPersonident(stream: MappedKStream<AktørAndSøkere>)
         .produce(Topics.endredePersonidenter)
 }
 
-internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(stream: MappedKStream<AktørAndSøkere>) {
+internal fun varsleOmFlerSøknaderForSammenslåttePersonidentifikatorer(stream: MappedStream<AktørAndSøkere>) {
     stream.secureLog {(aktør, søkere) ->
         info("Forsøker å varsle om fler søknader på samme person")
         val aapSøkere = søkere.map { it.key }

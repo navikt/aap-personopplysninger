@@ -3,7 +3,7 @@ package personopplysninger.streams
 import kotlinx.coroutines.runBlocking
 import no.nav.aap.kafka.streams.v2.KTable
 import no.nav.aap.kafka.streams.v2.Topology
-import no.nav.aap.kafka.streams.v2.stream.ConsumedKStream
+import no.nav.aap.kafka.streams.v2.stream.ConsumedStream
 import org.slf4j.LoggerFactory
 import personopplysninger.domain.Personopplysninger
 import personopplysninger.domain.PersonopplysningerInternDto
@@ -19,13 +19,13 @@ internal fun Topology.personopplysningStream(
     pdlClient: PdlGraphQLClient,
     norgClient: NorgClient,
 ) =
-    consume(Topics.personopplysningerIntern, true)
+    consume(Topics.personopplysningerIntern)
         .branch({ dto -> dto.kanSetteSkjerming() }, { it.skjermingBranch(skjermetKTable) })
         .branch({ dto -> dto.kanSettePdlopplysninger() }, { it.pdlBranch(pdlClient) })
         .branch({ dto -> dto.kanSetteEnhet() }, { it.norgBranch(norgClient) })
         .default { it.ferdigBranch() }
 
-internal fun ConsumedKStream<PersonopplysningerInternDto>.skjermingBranch(skjermede: KTable<SkjermetDto>) = this
+internal fun ConsumedStream<PersonopplysningerInternDto>.skjermingBranch(skjermede: KTable<SkjermetDto>) = this
     .leftJoinWith(skjermede)
     .map { personopplysningerInternDto, skjermetDto ->
         val personopplysninger = Personopplysninger.restore(personopplysningerInternDto)
@@ -34,7 +34,7 @@ internal fun ConsumedKStream<PersonopplysningerInternDto>.skjermingBranch(skjerm
     }
     .produce(Topics.personopplysningerIntern)
 
-internal fun ConsumedKStream<PersonopplysningerInternDto>.pdlBranch(pdlClient: PdlGraphQLClient) = this
+internal fun ConsumedStream<PersonopplysningerInternDto>.pdlBranch(pdlClient: PdlGraphQLClient) = this
     .mapNotNull { personident, dto ->
         val personopplysninger = Personopplysninger.restore(dto)
         val response = runBlocking { pdlClient.hentAlt(personident) }
@@ -48,9 +48,9 @@ internal fun ConsumedKStream<PersonopplysningerInternDto>.pdlBranch(pdlClient: P
         personopplysninger.settNavn(navn.fornavn, navn.mellomnavn, navn.etternavn)
         personopplysninger.toDto()
     }
-    .produce(Topics.personopplysningerIntern, true)
+    .produce(Topics.personopplysningerIntern)
 
-internal fun ConsumedKStream<PersonopplysningerInternDto>.norgBranch(norgClient: NorgClient) = this
+internal fun ConsumedStream<PersonopplysningerInternDto>.norgBranch(norgClient: NorgClient) = this
     .mapNotNull { personident, dto ->
         val request = ArbeidsfordelingDtoRequest.create(dto)
         val response = runBlocking { norgClient.hentArbeidsfordeling(request) }.singleOrNull()
@@ -62,8 +62,8 @@ internal fun ConsumedKStream<PersonopplysningerInternDto>.norgBranch(norgClient:
         personopplysninger.settEnhet(response.enhetNr)
         personopplysninger.toDto()
     }
-    .produce(Topics.personopplysningerIntern, true)
+    .produce(Topics.personopplysningerIntern)
 
-internal fun ConsumedKStream<PersonopplysningerInternDto>.ferdigBranch() = this
+internal fun ConsumedStream<PersonopplysningerInternDto>.ferdigBranch() = this
     .map { _, value -> value.mapTilPersonopplysningerDto() }
-    .produce(Topics.personopplysninger, true)
+    .produce(Topics.personopplysninger)

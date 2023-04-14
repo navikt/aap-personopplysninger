@@ -7,5 +7,5 @@ import personopplysninger.kafka.Topics
 internal fun Topology.søknadStream() {
     consume(Topics.søknad)
         .map { _, _ -> PersonopplysningerInternDto() }
-        .produce(Topics.personopplysningerIntern, true)
+        .produce(Topics.personopplysningerIntern)
 }
